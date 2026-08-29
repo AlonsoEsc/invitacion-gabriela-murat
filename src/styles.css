@@ -23,7 +23,7 @@ button, input, select, textarea { font: inherit; }
 button, a { -webkit-tap-highlight-color: transparent; }
 button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid var(--gold-light); outline-offset: 3px; }
 
-.invitation-shell { width: min(100%, 680px); margin-inline: auto; overflow: hidden; background: var(--paper) url("/assets/paper-texture.jpg") center top / 100% auto repeat-y; box-shadow: 0 0 48px rgba(0, 0, 0, .5); }
+.invitation-shell { width: min(100%, 680px); margin-inline: auto; overflow: hidden; background: var(--paper) var(--paper-texture) center top / 100% auto repeat-y; box-shadow: 0 0 48px rgba(0, 0, 0, .5); }
 .hero { position: relative; min-height: min(920px, 100svh); display: grid; place-items: end center; isolation: isolate; overflow: hidden; }
 .hero > img, .final-photo > img, .countdown-section > img, .photo-break > img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .hero > img { position: absolute; inset: 0; object-position: 50% 42%; z-index: -2; }
@@ -131,7 +131,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .floating-actions a { min-width: 68px; padding-inline: 16px; font: 500 .74rem/1 var(--serif); letter-spacing: .08em; }
 
 .modal-backdrop { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 22px; background: rgba(31, 10, 10, .76); }
-.gift-modal { position: relative; width: min(100%, 470px); padding: 62px 42px 46px; background: var(--paper) url("/assets/paper-texture.jpg") center / cover; border: 1px solid var(--gold); box-shadow: 0 24px 70px rgba(0, 0, 0, .48); text-align: center; }
+.gift-modal { position: relative; width: min(100%, 470px); padding: 62px 42px 46px; background: var(--paper) var(--paper-texture) center / cover; border: 1px solid var(--gold); box-shadow: 0 24px 70px rgba(0, 0, 0, .48); text-align: center; }
 .modal-close { position: absolute; top: 14px; right: 14px; width: 44px; height: 44px; color: var(--burgundy); background: transparent; border: 0; cursor: pointer; font-size: 1.2rem; }
 .modal-envelope { color: var(--gold); font-size: 2.5rem; }
 .gift-modal h3 { margin: 20px 0 18px; color: var(--burgundy); font: 500 2rem/1.2 var(--serif); text-transform: uppercase; }

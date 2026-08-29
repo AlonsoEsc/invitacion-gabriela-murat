@@ -25,6 +25,7 @@ import "@fontsource/montserrat/latin-600.css";
 import "@fontsource/allura/latin-400.css";
 
 const WEDDING_DATE = new Date("2026-12-26T18:00:00-06:00");
+const assetPath = (filename) => `${import.meta.env.BASE_URL}assets/${filename}`;
 
 const agenda = [
   { time: "6:00 p.m.", label: "Cóctel de bienvenida", icon: faMartiniGlassCitrus },
@@ -180,7 +181,7 @@ function RSVP() {
 
   return (
     <section className="rsvp-section" id="rsvp" aria-labelledby="rsvp-title">
-      <img className="rsvp-rings" src="/assets/gold-rings.webp" alt="" />
+      <img className="rsvp-rings" src={assetPath("gold-rings.webp")} alt="" />
       <SectionHeading eyebrow="¿Nos acompañas?" light>
         <span id="rsvp-title">Confirma tu asistencia</span>
       </SectionHeading>
@@ -218,10 +219,10 @@ export function App() {
   const [giftOpen, setGiftOpen] = useState(false);
 
   return (
-    <>
+    <div className="app-root" style={{ "--paper-texture": `url("${assetPath("paper-texture.jpg")}")` }}>
       <main className="invitation-shell">
         <section className="hero" aria-labelledby="hero-title">
-          <img src="/assets/hero-gabriela-murat.jpg" alt="Gabriela y Murat juntos en un jardín" />
+          <img src={assetPath("hero-gabriela-murat.jpg")} alt="Gabriela y Murat juntos en un jardín" />
           <div className="hero-overlay" />
           <div className="hero-copy">
             <p className="hero-kicker">Nuestra boda</p>
@@ -231,7 +232,7 @@ export function App() {
         </section>
 
         <section className="paper-section invitation-card" aria-labelledby="invitation-title">
-          <img className="envelope-image" src="/assets/envelope-gm.png" alt="Sobre de boda color vino con sello G y M" />
+          <img className="envelope-image" src={assetPath("envelope-gm.png")} alt="Sobre de boda color vino con sello G y M" />
           <div className="invitation-copy">
             <p className="monogram" aria-hidden="true">G&amp;M</p>
             <h2 id="invitation-title">Gabriela y Murat</h2>
@@ -241,7 +242,7 @@ export function App() {
         </section>
 
         <section className="countdown-section" aria-labelledby="countdown-title">
-          <img src="/assets/beach-gabriela-murat.jpg" alt="Gabriela y Murat caminando juntos frente al mar" />
+          <img src={assetPath("beach-gabriela-murat.jpg")} alt="Gabriela y Murat caminando juntos frente al mar" />
           <div className="countdown-veil" />
           <div className="countdown-content">
             <h2 id="countdown-title">Sólo faltan...</h2>
@@ -256,7 +257,7 @@ export function App() {
           <p>En diciembre de 2025 dijimos un “sí” lleno de profunda alegría. Hoy abrimos el corazón para compartir con ustedes esta nueva historia, convencidos de que nuestro mayor regalo ha sido encontrarnos y unir nuestras vidas para siempre.</p>
         </section>
 
-        <figure className="photo-break"><img src="/assets/garden-gabriela-murat.jpg" alt="Gabriela y Murat tomados de la mano en un jardín tropical" /></figure>
+        <figure className="photo-break"><img src={assetPath("garden-gabriela-murat.jpg")} alt="Gabriela y Murat tomados de la mano en un jardín tropical" /></figure>
 
         <section className="paper-section details-section" aria-labelledby="details-title">
           <SectionHeading eyebrow="Celebremos juntos"><span id="details-title">Detalles de la boda</span></SectionHeading>
@@ -306,7 +307,7 @@ export function App() {
         <RSVP />
 
         <footer className="final-photo">
-          <img src="/assets/studio-gabriela-murat.jpg" alt="Retrato de Gabriela y Murat" />
+          <img src={assetPath("studio-gabriela-murat.jpg")} alt="Retrato de Gabriela y Murat" />
           <div className="final-overlay" />
           <div className="final-copy"><p className="script">Gabriela &amp; Murat</p><p>¡Te esperamos!</p></div>
         </footer>
@@ -317,6 +318,6 @@ export function App() {
         <a href="#rsvp">RSVP</a>
       </div>
       {giftOpen && <GiftModal onClose={() => setGiftOpen(false)} />}
-    </>
+    </div>
   );
 }
