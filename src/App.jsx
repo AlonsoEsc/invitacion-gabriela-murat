@@ -226,7 +226,11 @@ export function App() {
           <div className="hero-overlay" />
           <div className="hero-copy">
             <p className="hero-kicker">Nuestra boda</p>
-            <h1 id="hero-title">Gabriela <span>&amp;</span> Murat</h1>
+            <h1 id="hero-title">
+              <span className="partner-name">Gabriela</span>
+              <span className="name-joiner"> &amp; </span>
+              <span className="partner-name partner-name--bold">Murat</span>
+            </h1>
             <p className="hero-date">26 · 12 · 2026</p>
           </div>
         </section>
@@ -247,6 +251,16 @@ export function App() {
           <div className="countdown-content">
             <h2 id="countdown-title">Sólo faltan...</h2>
             <Countdown />
+            <div className="countdown-calendar">
+              <p>Guarda la fecha</p>
+              <h3>Recordar boda</h3>
+              <div className="calendar-control">
+                <button className="button button--calendar" type="button" aria-expanded={calendarOpen} onClick={() => setCalendarOpen((open) => !open)}>
+                  <FontAwesomeIcon icon={faCalendarDays} /> Agregar al calendario
+                </button>
+                {calendarOpen && <CalendarMenu onClose={() => setCalendarOpen(false)} />}
+              </div>
+            </div>
           </div>
         </section>
 
@@ -281,15 +295,6 @@ export function App() {
           </ol>
         </section>
 
-        <section className="paper-section calendar-section" aria-labelledby="calendar-title">
-          <SectionHeading eyebrow="Guarda la fecha"><span id="calendar-title">Recordar boda</span></SectionHeading>
-          <p>Haz clic para añadir la boda a tu calendario.</p>
-          <div className="calendar-control">
-            <button className="button button--outline" type="button" aria-expanded={calendarOpen} onClick={() => setCalendarOpen((open) => !open)}><FontAwesomeIcon icon={faCalendarDays} /> Agregar al calendario</button>
-            {calendarOpen && <CalendarMenu onClose={() => setCalendarOpen(false)} />}
-          </div>
-        </section>
-
         <section className="dress-section" aria-labelledby="dress-title">
           <SectionHeading eyebrow="Vestimenta formal"><span id="dress-title">Dress code</span></SectionHeading>
           <div className="dress-figures" aria-hidden="true"><span>Elegancia</span><span>&amp;</span><span>Tradición</span></div>
@@ -309,7 +314,10 @@ export function App() {
         <footer className="final-photo">
           <img src={assetPath("studio-gabriela-murat.jpg")} alt="Retrato de Gabriela y Murat" />
           <div className="final-overlay" />
-          <div className="final-copy"><p className="script">Gabriela &amp; Murat</p><p>¡Te esperamos!</p></div>
+          <div className="final-copy">
+            <p className="script">Gabriela <span>&amp;</span> <strong>Murat</strong></p>
+            <p>¡Te esperamos!</p>
+          </div>
         </footer>
       </main>
 
