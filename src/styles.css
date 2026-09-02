@@ -40,7 +40,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .hero-date { margin: 22px 0 0; font: 500 1.5rem/1 var(--serif); letter-spacing: .38em; }
 
 .paper-section, .dress-section { position: relative; padding: 84px 72px; text-align: center; background: rgba(251, 247, 239, .72); }
-.invitation-card { padding: 38px 32px 76px; background: #e8ddd0; }
+.invitation-card { padding: 38px 32px 130px; background-color: #e8ddd0; background-image: linear-gradient(rgba(232, 221, 208, .76), rgba(232, 221, 208, .76)), var(--paper-texture); background-position: center top; background-size: auto, 100% auto; background-repeat: repeat, repeat-y; }
 .envelope-image { display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border: 1px solid rgba(198, 161, 91, .44); box-shadow: 0 15px 35px rgba(65, 7, 13, .15); filter: saturate(1.08) contrast(1.04); }
 .invitation-copy { position: relative; width: calc(100% - 40px); margin: -68px auto 0; padding: 52px 38px 46px; background: var(--ivory); border: 1px solid var(--gold); box-shadow: 0 16px 30px rgba(65, 7, 13, .14); }
 .invitation-copy::before { content: ""; position: absolute; inset: 11px; border: 1px solid rgba(111, 17, 29, .38); pointer-events: none; }
@@ -154,7 +154,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .hero { min-height: 820px; }
   .hero-copy { padding: 62px 22px 54px; transform: translateY(-62px); }
   .paper-section, .dress-section, .rsvp-section { padding-left: 28px; padding-right: 28px; }
-  .invitation-card { padding: 22px 16px 62px; }
+  .invitation-card { padding: 22px 16px 104px; }
   .invitation-copy { width: calc(100% - 20px); margin-top: -48px; padding-inline: 24px; }
   .countdown-section { height: 510px; }
   .countdown-grid { gap: 2px; }
