@@ -28,7 +28,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .invitation-shell { width: min(100%, 680px); margin-inline: auto; overflow: hidden; background: var(--paper) var(--paper-texture) center top / 100% auto repeat-y; box-shadow: 0 0 48px rgba(0, 0, 0, .5); }
 .hero { position: relative; min-height: min(920px, 100svh); display: grid; place-items: end center; isolation: isolate; overflow: hidden; }
 .hero > img, .final-photo > img, .countdown-section > img, .photo-break > img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.hero > img { position: absolute; inset: 0; object-position: 50% 42%; z-index: -2; filter: saturate(1.14) contrast(1.08) brightness(.96); }
+.hero > img { position: absolute; inset: 0; object-position: 50% 35%; z-index: -2; filter: saturate(1.14) contrast(1.08) brightness(.96); }
 .hero-overlay, .final-overlay, .countdown-veil { position: absolute; inset: 0; background: rgba(35, 9, 12, .28); z-index: -1; }
 .hero-overlay { top: 38%; background: linear-gradient(180deg, transparent 0%, rgba(47, 5, 10, .34) 22%, rgba(47, 5, 10, .82) 100%); }
 .hero-copy { width: 100%; padding: 70px 30px 64px; color: var(--ivory); text-align: center; }
@@ -129,7 +129,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .form-notice { margin: -4px 0 0; color: var(--gold-light); text-align: center; font-size: .82rem; }
 
 .final-photo { position: relative; height: 770px; margin: 0; isolation: isolate; overflow: hidden; }
-.final-photo > img { position: absolute; inset: 0; z-index: -2; object-position: 50% 35%; filter: saturate(1.08) contrast(1.08) brightness(.98); }
+.final-photo > img { position: absolute; inset: 0; z-index: -2; object-position: 50% 42%; filter: saturate(1.08) contrast(1.08) brightness(.98); }
 .final-overlay { top: 48%; background: linear-gradient(180deg, transparent, rgba(47, 5, 10, .8)); }
 .final-copy { position: absolute; inset: auto 0 50px; color: var(--ivory); text-align: center; }
 .final-copy .script { margin: 0; font: 400 4rem/1 var(--script); }

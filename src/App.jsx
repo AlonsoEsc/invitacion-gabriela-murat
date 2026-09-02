@@ -222,7 +222,7 @@ export function App() {
     <div className="app-root" style={{ "--paper-texture": `url("${assetPath("paper-texture.jpg")}")` }}>
       <main className="invitation-shell">
         <section className="hero" aria-labelledby="hero-title">
-          <img src={assetPath("hero-gabriela-murat.jpg")} alt="Gabriela y Murat juntos en un jardín" />
+          <img src={assetPath("studio-gabriela-murat.jpg")} alt="Retrato de Gabriela y Murat" />
           <div className="hero-overlay" />
           <div className="hero-copy">
             <p className="hero-kicker">Nuestra boda</p>
@@ -312,7 +312,7 @@ export function App() {
         <RSVP />
 
         <footer className="final-photo">
-          <img src={assetPath("studio-gabriela-murat.jpg")} alt="Retrato de Gabriela y Murat" />
+          <img src={assetPath("hero-gabriela-murat.jpg")} alt="Gabriela y Murat juntos en un jardín" />
           <div className="final-overlay" />
           <div className="final-copy">
             <p className="script">Gabriela <span>&amp;</span> <strong>Murat</strong></p>
