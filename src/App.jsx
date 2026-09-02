@@ -242,6 +242,7 @@ export function App() {
             <h2 id="invitation-title">Gabriela y Murat</h2>
             <p>Con gran alegría, los invitamos a acompañarnos a celebrar nuestro matrimonio.</p>
             <time dateTime="2026-12-26">26 de diciembre de 2026</time>
+            <img className="invitation-rings" src={assetPath("gold-rings.webp")} alt="" />
           </div>
         </section>
 
