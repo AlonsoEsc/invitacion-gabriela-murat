@@ -31,12 +31,13 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .hero > img { position: absolute; inset: 0; object-position: 50% 35%; z-index: -2; filter: saturate(1.14) contrast(1.08) brightness(.96); }
 .hero-overlay, .final-overlay, .countdown-veil { position: absolute; inset: 0; background: rgba(35, 9, 12, .28); z-index: -1; }
 .hero-overlay { top: 38%; background: linear-gradient(180deg, transparent 0%, rgba(47, 5, 10, .34) 22%, rgba(47, 5, 10, .82) 100%); }
-.hero-copy { width: 100%; padding: 70px 30px 64px; color: var(--ivory); text-align: center; }
+.hero-copy { width: 100%; padding: 70px 30px 64px; color: var(--ivory); text-align: center; transform: translateY(-80px); }
 .hero-kicker, .section-heading > p { margin: 0 0 8px; font: 500 .76rem/1.4 var(--sans); letter-spacing: .32em; text-transform: uppercase; }
+.hero-kicker { font-size: 1.26rem; }
 .hero h1 { margin: 0; font: 400 clamp(3.15rem, 12vw, 5.8rem)/.9 var(--script); }
 .hero h1 .name-joiner { color: var(--gold-light); }
 .hero h1 .partner-name--bold { font-family: var(--serif); font-size: .72em; font-weight: 600; letter-spacing: -.04em; }
-.hero-date { margin: 22px 0 0; font: 500 1rem/1 var(--serif); letter-spacing: .38em; }
+.hero-date { margin: 22px 0 0; font: 500 1.5rem/1 var(--serif); letter-spacing: .38em; }
 
 .paper-section, .dress-section { position: relative; padding: 84px 72px; text-align: center; background: rgba(251, 247, 239, .72); }
 .invitation-card { padding: 38px 32px 76px; background: #e8ddd0; }
@@ -151,7 +152,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 
 @media (max-width: 560px) {
   .hero { min-height: 820px; }
-  .hero-copy { padding: 62px 22px 54px; }
+  .hero-copy { padding: 62px 22px 54px; transform: translateY(-62px); }
   .paper-section, .dress-section, .rsvp-section { padding-left: 28px; padding-right: 28px; }
   .invitation-card { padding: 22px 16px 62px; }
   .invitation-copy { width: calc(100% - 20px); margin-top: -48px; padding-inline: 24px; }
