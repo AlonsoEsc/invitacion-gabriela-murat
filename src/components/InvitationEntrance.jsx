@@ -11,7 +11,7 @@ export function InvitationEntrance({ assetPath, onOpen }) {
   }, [opening, onOpen]);
 
   return (
-    <main className={`invitation-entrance${opening ? " is-opening" : ""}`} aria-label="Invitación de Gabriela y Murat">
+    <main className={`invitation-entrance${opening ? " is-opening" : ""}`} aria-label="Invitación de Gabriela y Murad">
       <div className="entrance-envelope">
         <div className="entrance-letter" aria-hidden="true">
           <img src={assetPath("monogram-gm-burgundy.png")} alt="" />
@@ -21,7 +21,7 @@ export function InvitationEntrance({ assetPath, onOpen }) {
         <div className="envelope-fold envelope-fold--right" />
         <div className="envelope-fold envelope-fold--bottom" />
         <div className="envelope-flap" />
-        <button className="entrance-seal" type="button" aria-label="Abrir invitación de Gabriela y Murat" disabled={opening} onClick={() => setOpening(true)}>
+        <button className="entrance-seal" type="button" aria-label="Abrir invitación de Gabriela y Murad" disabled={opening} onClick={() => setOpening(true)}>
           <svg viewBox="434 871 252 252" aria-hidden="true" focusable="false">
             <image href={assetPath("envelope-gm-serif.png")} width="1122" height="1402" />
           </svg>

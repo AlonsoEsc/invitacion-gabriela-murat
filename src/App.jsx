@@ -88,7 +88,7 @@ function CalendarMenu({ onClose }) {
   const googleUrl = useMemo(() => {
     const params = new URLSearchParams({
       action: "TEMPLATE",
-      text: "Boda de Gabriela y Murat",
+      text: "Boda de Gabriela y Murad",
       dates: "20261227T000000Z/20261227T060000Z",
       details: "Acompáñanos a celebrar nuestro matrimonio.",
       location: "Holiday Inn San Salvador, Urb. y Blvd. Santa Elena y Calle Pital Oriente, San Salvador",
@@ -100,13 +100,13 @@ function CalendarMenu({ onClose }) {
     const ics = [
       "BEGIN:VCALENDAR",
       "VERSION:2.0",
-      "PRODID:-//Gabriela y Murat//Boda//ES",
+      "PRODID:-//Gabriela y Murad//Boda//ES",
       "BEGIN:VEVENT",
-      "UID:gabriela-murat-20261226@example.local",
+      "UID:gabriela-murad-20261226@example.local",
       "DTSTAMP:20260829T000000Z",
       "DTSTART:20261227T000000Z",
       "DTEND:20261227T060000Z",
-      "SUMMARY:Boda de Gabriela y Murat",
+      "SUMMARY:Boda de Gabriela y Murad",
       "LOCATION:Holiday Inn San Salvador\, Urb. y Blvd. Santa Elena y Calle Pital Oriente",
       "DESCRIPTION:Acompáñanos a celebrar nuestro matrimonio.",
       "END:VEVENT",
@@ -114,7 +114,7 @@ function CalendarMenu({ onClose }) {
     ].join("\r\n");
     const link = document.createElement("a");
     link.href = URL.createObjectURL(new Blob([ics], { type: "text/calendar" }));
-    link.download = "boda-gabriela-murat.ics";
+    link.download = "boda-gabriela-murad.ics";
     link.click();
     URL.revokeObjectURL(link.href);
     onClose();
@@ -137,7 +137,7 @@ function GiftModal({ onClose }) {
         </button>
         <FontAwesomeIcon className="modal-envelope" icon={faEnvelope} />
         <h3 id="gift-modal-title">Detalles de cariño</h3>
-        <p>La información bancaria se mostrará aquí de manera discreta cuando sea confirmada por Gabriela y Murat.</p>
+        <p>La información bancaria se mostrará aquí de manera discreta cuando sea confirmada por Gabriela y Murad.</p>
         <p className="modal-note">Por ahora, tu presencia y tus buenos deseos son el regalo más importante.</p>
       </section>
     </div>
@@ -232,14 +232,14 @@ export function App() {
       {!invitationOpen ? <InvitationEntrance assetPath={assetPath} onOpen={openInvitation} /> : <>
       <main className="invitation-shell" ref={invitationRef}>
         <section className="hero" aria-labelledby="hero-title">
-          <img src={assetPath("studio-gabriela-murat.jpg")} alt="Retrato de Gabriela y Murat" />
+          <img src={assetPath("studio-gabriela-murat.jpg")} alt="Retrato de Gabriela y Murad" />
           <div className="hero-overlay" />
           <div className="hero-copy" data-reveal>
             <p className="hero-kicker">Nuestra boda</p>
             <h1 id="hero-title" ref={heroTitleRef} tabIndex={-1}>
               <span className="partner-name">Gabriela</span>
               <span className="name-joiner"> &amp; </span>
-              <span className="partner-name partner-name--bold">Murat</span>
+              <span className="partner-name partner-name--bold">Murad</span>
             </h1>
             <p className="hero-date">26 · 12 · 2026</p>
           </div>
@@ -250,7 +250,7 @@ export function App() {
             <img className="envelope-image" src={assetPath("envelope-gm-serif.png")} alt="Sobre de boda color vino con sello G y M" />
             <div className="invitation-copy" data-reveal>
               <img className="invitation-monogram" src={assetPath("monogram-gm-burgundy.png")} alt="" />
-              <h2 id="invitation-title">Gabriela y Murat</h2>
+              <h2 id="invitation-title">Gabriela y Murad</h2>
               <p>Con gran alegría, los invitamos a acompañarnos a celebrar nuestro matrimonio.</p>
               <time dateTime="2026-12-26">26 de diciembre de 2026</time>
               <img className="invitation-rings" src={assetPath("gold-rings.webp")} alt="" />
@@ -259,7 +259,7 @@ export function App() {
         </section>
 
         <section className="countdown-section" aria-labelledby="countdown-title">
-          <img src={assetPath("beach-gabriela-murat.jpg")} alt="Gabriela y Murat caminando juntos frente al mar" />
+          <img src={assetPath("beach-gabriela-murat.jpg")} alt="Gabriela y Murad caminando juntos frente al mar" />
           <div className="countdown-veil" />
           <div className="countdown-content" data-reveal>
             <h2 id="countdown-title">Sólo faltan...</h2>
@@ -280,12 +280,12 @@ export function App() {
         <section className="paper-section story-section" aria-labelledby="story-title">
           <OrientalFrame />
           <SectionHeading eyebrow="Nuestra historia"><span id="story-title">El gran sí</span></SectionHeading>
-          <div className="story-mark" aria-hidden="true">Gabriela &amp; Murat</div>
+          <div className="story-mark" aria-hidden="true">Gabriela &amp; Murad</div>
           <p data-reveal>Caminamos años a la distancia, pero desde el primer día sentimos esa conexión eléctrica e innegable. El amor no sabe de mapas: unió a El Salvador y Palestina, al otro lado del mundo, para demostrarnos que el destino ya nos tenía escritos.</p>
           <p data-reveal>En diciembre de 2025 dijimos un “sí” lleno de profunda alegría. Hoy abrimos el corazón para compartir con ustedes esta nueva historia, convencidos de que nuestro mayor regalo ha sido encontrarnos y unir nuestras vidas para siempre.</p>
         </section>
 
-        <figure className="photo-break"><img src={assetPath("garden-gabriela-murat.jpg")} alt="Gabriela y Murat tomados de la mano en un jardín tropical" /></figure>
+        <figure className="photo-break"><img src={assetPath("garden-gabriela-murat.jpg")} alt="Gabriela y Murad tomados de la mano en un jardín tropical" /></figure>
 
         <section className="paper-section details-section" aria-labelledby="details-title">
           <SectionHeading eyebrow="Celebremos juntos"><span id="details-title">Detalles de la boda</span></SectionHeading>
@@ -334,10 +334,10 @@ export function App() {
         <RSVP />
 
         <footer className="final-photo">
-          <img src={assetPath("hero-gabriela-murat.jpg")} alt="Gabriela y Murat juntos en un jardín" />
+          <img src={assetPath("hero-gabriela-murat.jpg")} alt="Gabriela y Murad juntos en un jardín" />
           <div className="final-overlay" />
           <div className="final-copy" data-reveal>
-            <p className="script">Gabriela <span>&amp;</span> <strong>Murat</strong></p>
+            <p className="script">Gabriela <span>&amp;</span> <strong>Murad</strong></p>
             <p>¡Te esperamos!</p>
           </div>
         </footer>

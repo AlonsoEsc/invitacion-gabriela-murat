@@ -32,7 +32,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .hero > img, .final-photo > img, .countdown-section > img, .photo-break > img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .hero > img { position: absolute; inset: 0; object-position: 50% 35%; z-index: -2; filter: saturate(1.14) contrast(1.08) brightness(.96); }
 .hero-overlay, .final-overlay, .countdown-veil { position: absolute; inset: 0; background: rgba(35, 9, 12, .28); z-index: -1; }
-.hero-overlay { top: 38%; background: linear-gradient(180deg, transparent 0%, rgba(47, 5, 10, .34) 22%, rgba(47, 5, 10, .82) 100%); }
+.hero-overlay { top: 42%; background: linear-gradient(180deg, transparent 0%, rgba(47, 5, 10, .2) 30%, rgba(47, 5, 10, .7) 100%); }
 .hero-copy { position: relative; z-index: 2; width: 100%; padding: 70px 30px 125px; color: var(--ivory); text-align: center; }
 .hero-kicker, .section-heading > p { margin: 0 0 8px; font: 500 .76rem/1.4 var(--sans); letter-spacing: .32em; text-transform: uppercase; }
 .hero-kicker { font-size: 1.26rem; }
@@ -55,9 +55,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .invitation-copy time { display: block; color: var(--burgundy); font: 400 1.42rem/1.3 var(--serif); letter-spacing: .03em; text-transform: uppercase; }
 .invitation-rings { display: block; width: 104px; height: auto; margin: 26px auto 0; object-fit: contain; }
 
-.countdown-section { position: relative; min-height: 540px; display: grid; place-items: center; isolation: isolate; color: var(--ivory); box-shadow: 0 -26px 48px rgba(94, 26, 34, .3); }
+.countdown-section { position: relative; min-height: 540px; display: grid; place-items: center; isolation: isolate; color: var(--ivory); box-shadow: 0 -18px 34px rgba(94, 26, 34, .16); }
 .countdown-section > img { position: absolute; inset: 0; z-index: -2; object-position: 50% 72%; }
-.countdown-veil { background: linear-gradient(180deg, rgba(94, 26, 34, .5), rgba(65, 7, 13, .86)); }
+.countdown-veil { background: linear-gradient(180deg, rgba(94, 26, 34, .36), rgba(65, 7, 13, .72)); }
 .countdown-content { position: relative; z-index: 2; width: 100%; padding: 78px 24px 94px; text-align: center; }
 .countdown-content h2 { margin: 0 0 24px; color: var(--gold-light); font: 500 clamp(1.7rem, 5.7vw, 2.65rem)/1 var(--serif); text-transform: uppercase; }
 .countdown-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
@@ -82,7 +82,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .story-section p { position: relative; z-index: 1; margin: 0 auto 30px; max-width: 530px; font-family: "Times New Roman", Times, serif; font-size: clamp(1.18rem, 3.2vw, 1.28rem); font-weight: 400; font-style: normal; line-height: 1.82; letter-spacing: .012em; }
 .story-section p strong, .story-section p b { font-weight: 400; }
 .story-mark { position: absolute; inset: 42% 0 auto; color: rgba(223, 201, 140, .09); font: 400 6.4rem/1 var(--script); transform: rotate(-8deg); pointer-events: none; }
-.photo-break { position: relative; margin: 0; height: 610px; overflow: hidden; background: var(--story-red); box-shadow: inset 0 26px 54px rgba(65, 7, 13, .2), inset 0 -18px 34px rgba(251, 247, 239, .08); }
+.photo-break { position: relative; margin: 0; height: 610px; overflow: hidden; background: var(--story-red); box-shadow: inset 0 18px 36px rgba(65, 7, 13, .12), inset 0 -14px 26px rgba(251, 247, 239, .055); }
 .photo-break img { object-position: 50% 47%; filter: saturate(1.12) contrast(1.04) brightness(.98) sepia(.06); transform: scale(1.012); }
 
 .details-section { padding-block: 100px 120px; }
@@ -146,7 +146,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 
 .final-photo { position: relative; height: 770px; margin: 0; isolation: isolate; overflow: hidden; }
 .final-photo > img { position: absolute; inset: 0; z-index: -2; object-position: 50% 42%; filter: saturate(1.08) contrast(1.08) brightness(.98); }
-.final-overlay { top: 48%; background: linear-gradient(180deg, transparent, rgba(47, 5, 10, .8)); }
+.final-overlay { top: 54%; background: linear-gradient(180deg, transparent, rgba(47, 5, 10, .66)); }
 .final-copy { position: absolute; z-index: 2; inset: auto 0 70px; color: var(--ivory); text-align: center; }
 .final-copy .script { margin: 0; font: 400 4rem/1 var(--script); }
 .final-copy .script span { color: var(--gold-light); }
@@ -171,12 +171,12 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .photo-break { --photo-edge-top: var(--story-red); --photo-edge-bottom: var(--ivory); }
 .final-photo { --photo-edge-top: var(--story-red); --photo-edge-bottom: #211d1c; }
 :is(.hero, .countdown-section, .photo-break, .final-photo)::before,
-:is(.hero, .countdown-section, .photo-break, .final-photo)::after { content: ""; position: absolute; z-index: 1; left: 0; right: 0; height: clamp(72px, 15vw, 125px); pointer-events: none; }
+:is(.hero, .countdown-section, .photo-break, .final-photo)::after { content: ""; position: absolute; z-index: 1; left: 0; right: 0; height: clamp(48px, 10vw, 82px); pointer-events: none; }
 :is(.hero, .countdown-section, .photo-break, .final-photo)::before { top: 0; background: linear-gradient(to bottom, var(--photo-edge-top), transparent); }
 :is(.hero, .countdown-section, .photo-break, .final-photo)::after { bottom: 0; background: linear-gradient(to top, var(--photo-edge-bottom), transparent); }
-.countdown-section::before { height: clamp(92px, 19vw, 150px); background: linear-gradient(to bottom, var(--story-red) 0%, rgba(94, 26, 34, .76) 30%, rgba(94, 26, 34, 0) 100%); }
-.photo-break::before { height: clamp(100px, 21vw, 165px); background: linear-gradient(to bottom, var(--story-red) 0%, rgba(94, 26, 34, .82) 26%, rgba(94, 26, 34, .28) 62%, transparent 100%); }
-.photo-break::after { height: clamp(56px, 11vw, 82px); background: linear-gradient(to top, var(--ivory) 0%, rgba(245, 239, 228, .48) 18%, rgba(198, 161, 91, .07) 52%, transparent 100%); }
+.countdown-section::before { height: clamp(66px, 13vw, 104px); background: linear-gradient(to bottom, var(--story-red) 0%, rgba(94, 26, 34, .5) 28%, rgba(94, 26, 34, 0) 100%); }
+.photo-break::before { height: clamp(72px, 15vw, 116px); background: linear-gradient(to bottom, var(--story-red) 0%, rgba(94, 26, 34, .56) 24%, rgba(198, 161, 91, .08) 64%, transparent 100%); }
+.photo-break::after { height: clamp(48px, 9vw, 70px); background: linear-gradient(to top, var(--ivory) 0%, rgba(245, 239, 228, .38) 16%, rgba(198, 161, 91, .055) 48%, transparent 100%); }
 .decorative-arcs { position: absolute; inset: 20px 0; width: 100%; height: calc(100% - 40px); color: var(--gold); stroke: currentColor; stroke-width: 1.15; pointer-events: none; }
 .arc-secondary { opacity: .35; stroke-width: .65; }
 .story-section .decorative-arcs { color: var(--gold-light); opacity: .8; }
