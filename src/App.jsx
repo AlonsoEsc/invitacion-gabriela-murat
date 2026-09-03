@@ -1,18 +1,16 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { InvitationEntrance } from "./components/InvitationEntrance.jsx";
+import { AgendaIllustration, DecorativeArcs, OrientalFrame } from "./components/WeddingIllustrations.jsx";
+import { useScrollReveal } from "./hooks/useScrollReveal.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowUp,
   faCalendarDays,
-  faChampagneGlasses,
   faClock,
   faEnvelope,
   faGift,
-  faLocationDot,
   faMapLocationDot,
-  faMartiniGlassCitrus,
-  faMusic,
   faRoute,
-  faUtensils,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { faPinterestP } from "@fortawesome/free-brands-svg-icons";
@@ -28,12 +26,12 @@ const WEDDING_DATE = new Date("2026-12-26T18:00:00-06:00");
 const assetPath = (filename) => `${import.meta.env.BASE_URL}assets/${filename}`;
 
 const agenda = [
-  { time: "6:00 p.m.", label: "Cóctel de bienvenida", icon: faMartiniGlassCitrus },
-  { time: "7:00 p.m.", label: "Gran entrada y brindis", icon: faChampagneGlasses },
-  { time: "7:30 p.m.", label: "Banquete", icon: faUtensils },
-  { time: "8:30 p.m.", label: "¡A bailar!", icon: faMusic },
-  { time: "10:00 p.m.", label: "Snack nocturno", icon: faUtensils },
-  { time: "11:00 p.m.", label: "Despedida y buena música", icon: faMusic },
+  { time: "6:00 p.m.", label: "Cóctel de bienvenida", illustration: "cocktail" },
+  { time: "7:00 p.m.", label: "Gran entrada y brindis", illustration: "toast" },
+  { time: "7:30 p.m.", label: "Banquete", illustration: "dinner" },
+  { time: "8:30 p.m.", label: "¡A bailar!", illustration: "music" },
+  { time: "10:00 p.m.", label: "Snack nocturno", illustration: "snack" },
+  { time: "11:00 p.m.", label: "Despedida y buena música", illustration: "farewell" },
 ];
 
 function getCountdown() {
@@ -78,7 +76,7 @@ function Countdown() {
 
 function SectionHeading({ eyebrow, children, light = false }) {
   return (
-    <header className={`section-heading${light ? " section-heading--light" : ""}`}>
+    <header className={`section-heading${light ? " section-heading--light" : ""}`} data-reveal>
       {eyebrow && <p>{eyebrow}</p>}
       <h2>{children}</h2>
       <span aria-hidden="true" />
@@ -187,7 +185,7 @@ function RSVP() {
       </SectionHeading>
       <p className="rsvp-deadline">Por favor confirma tu asistencia antes del 1 de diciembre de 2026.</p>
       {answer && <div className="current-answer" role="status">Respuesta actual: <strong>{answer === "asistire" ? "Asistiré" : "No asistiré"}</strong></div>}
-      <form className="rsvp-form" onSubmit={(event) => event.preventDefault()}>
+      <form className="rsvp-form" data-reveal onSubmit={(event) => event.preventDefault()}>
         <label>Nombre<input value={guest} disabled /></label>
         <label>
           Número de invitados
@@ -215,18 +213,30 @@ function RSVP() {
 }
 
 export function App() {
+  const [invitationOpen, setInvitationOpen] = useState(false);
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [giftOpen, setGiftOpen] = useState(false);
+  const invitationRef = useRef(null);
+  const heroTitleRef = useRef(null);
+  const openInvitation = useCallback(() => setInvitationOpen(true), []);
+  useScrollReveal(invitationRef, invitationOpen);
+
+  useEffect(() => {
+    if (!invitationOpen) return;
+    window.scrollTo({ top: 0, behavior: "instant" });
+    heroTitleRef.current?.focus({ preventScroll: true });
+  }, [invitationOpen]);
 
   return (
     <div className="app-root" style={{ "--paper-texture": `url("${assetPath("paper-texture.jpg")}")` }}>
-      <main className="invitation-shell">
+      {!invitationOpen ? <InvitationEntrance assetPath={assetPath} onOpen={openInvitation} /> : <>
+      <main className="invitation-shell" ref={invitationRef}>
         <section className="hero" aria-labelledby="hero-title">
           <img src={assetPath("studio-gabriela-murat.jpg")} alt="Retrato de Gabriela y Murat" />
           <div className="hero-overlay" />
-          <div className="hero-copy">
+          <div className="hero-copy" data-reveal>
             <p className="hero-kicker">Nuestra boda</p>
-            <h1 id="hero-title">
+            <h1 id="hero-title" ref={heroTitleRef} tabIndex={-1}>
               <span className="partner-name">Gabriela</span>
               <span className="name-joiner"> &amp; </span>
               <span className="partner-name partner-name--bold">Murat</span>
@@ -236,20 +246,22 @@ export function App() {
         </section>
 
         <section className="paper-section invitation-card" aria-labelledby="invitation-title">
-          <img className="envelope-image" src={assetPath("envelope-gm.png")} alt="Sobre de boda color vino con sello G y M" />
-          <div className="invitation-copy">
-            <p className="monogram" aria-hidden="true">G&amp;M</p>
-            <h2 id="invitation-title">Gabriela y Murat</h2>
-            <p>Con gran alegría, los invitamos a acompañarnos a celebrar nuestro matrimonio.</p>
-            <time dateTime="2026-12-26">26 de diciembre de 2026</time>
-            <img className="invitation-rings" src={assetPath("gold-rings.webp")} alt="" />
+          <div className="invitation-paper" style={{ "--envelope-paper": `url("${assetPath("envelope-gm-serif.png")}")` }}>
+            <img className="envelope-image" src={assetPath("envelope-gm-serif.png")} alt="Sobre de boda color vino con sello G y M" />
+            <div className="invitation-copy" data-reveal>
+              <img className="invitation-monogram" src={assetPath("monogram-gm-burgundy.png")} alt="" />
+              <h2 id="invitation-title">Gabriela y Murat</h2>
+              <p>Con gran alegría, los invitamos a acompañarnos a celebrar nuestro matrimonio.</p>
+              <time dateTime="2026-12-26">26 de diciembre de 2026</time>
+              <img className="invitation-rings" src={assetPath("gold-rings.webp")} alt="" />
+            </div>
           </div>
         </section>
 
         <section className="countdown-section" aria-labelledby="countdown-title">
           <img src={assetPath("beach-gabriela-murat.jpg")} alt="Gabriela y Murat caminando juntos frente al mar" />
           <div className="countdown-veil" />
-          <div className="countdown-content">
+          <div className="countdown-content" data-reveal>
             <h2 id="countdown-title">Sólo faltan...</h2>
             <Countdown />
             <div className="countdown-calendar">
@@ -266,19 +278,20 @@ export function App() {
         </section>
 
         <section className="paper-section story-section" aria-labelledby="story-title">
+          <OrientalFrame />
           <SectionHeading eyebrow="Nuestra historia"><span id="story-title">El gran sí</span></SectionHeading>
           <div className="story-mark" aria-hidden="true">Gabriela &amp; Murat</div>
-          <p>Caminamos años a la distancia, pero desde el primer día sentimos esa conexión eléctrica e innegable. El amor no sabe de mapas: unió a El Salvador y Palestina, al otro lado del mundo, para demostrarnos que el destino ya nos tenía escritos.</p>
-          <p>En diciembre de 2025 dijimos un “sí” lleno de profunda alegría. Hoy abrimos el corazón para compartir con ustedes esta nueva historia, convencidos de que nuestro mayor regalo ha sido encontrarnos y unir nuestras vidas para siempre.</p>
+          <p data-reveal>Caminamos años a la distancia, pero desde el primer día sentimos esa conexión eléctrica e innegable. El amor no sabe de mapas: unió a El Salvador y Palestina, al otro lado del mundo, para demostrarnos que el destino ya nos tenía escritos.</p>
+          <p data-reveal>En diciembre de 2025 dijimos un “sí” lleno de profunda alegría. Hoy abrimos el corazón para compartir con ustedes esta nueva historia, convencidos de que nuestro mayor regalo ha sido encontrarnos y unir nuestras vidas para siempre.</p>
         </section>
 
         <figure className="photo-break"><img src={assetPath("garden-gabriela-murat.jpg")} alt="Gabriela y Murat tomados de la mano en un jardín tropical" /></figure>
 
         <section className="paper-section details-section" aria-labelledby="details-title">
           <SectionHeading eyebrow="Celebremos juntos"><span id="details-title">Detalles de la boda</span></SectionHeading>
-          <article className="venue-card">
-            <div className="venue-icon" aria-hidden="true"><FontAwesomeIcon icon={faLocationDot} /></div>
+          <article className="venue-card" data-reveal>
             <p className="venue-label">Recepción</p>
+            <img className="hotel-illustration" src={assetPath("hotel-holiday-inn-line-art.png")} alt="Ilustración del Hotel Holiday Inn San Salvador" />
             <p className="venue-time"><FontAwesomeIcon icon={faClock} /> 6:00 p.m.</p>
             <h3>Hotel Holiday Inn</h3>
             <address>Urb. y Blvd. Santa Elena y Calle Pital Oriente, San Salvador, 1502, El Salvador</address>
@@ -290,15 +303,23 @@ export function App() {
         </section>
 
         <section className="paper-section agenda-section" aria-labelledby="agenda-title">
+          <DecorativeArcs />
           <SectionHeading eyebrow="Nuestro gran día"><span id="agenda-title">Agenda de la boda</span></SectionHeading>
           <ol className="timeline">
-            {agenda.map((item) => <li key={item.time}><div className="timeline-icon"><FontAwesomeIcon icon={item.icon} /></div><div><time>{item.time}</time><p>{item.label}</p></div></li>)}
+            {agenda.map((item) => <li key={item.time} data-reveal><div className="timeline-item"><div className="timeline-icon"><AgendaIllustration kind={item.illustration} /></div><time>{item.time}</time><p>{item.label}</p></div></li>)}
           </ol>
         </section>
 
         <section className="dress-section" aria-labelledby="dress-title">
+          <DecorativeArcs />
           <SectionHeading eyebrow="Vestimenta formal"><span id="dress-title">Dress code</span></SectionHeading>
-          <div className="dress-figures" aria-hidden="true"><span>Elegancia</span><span>&amp;</span><span>Tradición</span></div>
+          <div className="dress-illustration-wrap" data-reveal>
+            <img
+              className="dress-illustration"
+              src={assetPath("dress-code-formal-line-art.png")}
+              alt="Ilustración dorada de vestido formal y traje"
+            />
+          </div>
           <p>Les pedimos amablemente evitar el color blanco y sus derivados —marfil, perla y hueso—, ya que están reservados especialmente para la novia.</p>
           <a className="button button--burgundy" href="https://www.pinterest.com/search/pins/?q=vestimenta%20formal%20boda" target="_blank" rel="noreferrer"><FontAwesomeIcon icon={faPinterestP} /> Mira algunas sugerencias aquí</a>
         </section>
@@ -315,7 +336,7 @@ export function App() {
         <footer className="final-photo">
           <img src={assetPath("hero-gabriela-murat.jpg")} alt="Gabriela y Murat juntos en un jardín" />
           <div className="final-overlay" />
-          <div className="final-copy">
+          <div className="final-copy" data-reveal>
             <p className="script">Gabriela <span>&amp;</span> <strong>Murat</strong></p>
             <p>¡Te esperamos!</p>
           </div>
@@ -327,6 +348,7 @@ export function App() {
         <a href="#rsvp">RSVP</a>
       </div>
       {giftOpen && <GiftModal onClose={() => setGiftOpen(false)} />}
+      </>}
     </div>
   );
 }
