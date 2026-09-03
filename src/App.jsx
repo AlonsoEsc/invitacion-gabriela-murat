@@ -179,7 +179,7 @@ function RSVP() {
 
   return (
     <section className="rsvp-section" id="rsvp" aria-labelledby="rsvp-title">
-      <img className="rsvp-rings" src={assetPath("gold-rings.webp")} alt="" />
+      <img className="rsvp-seal" src={assetPath("gold-wax-seal-gm.png")} alt="" />
       <SectionHeading eyebrow="¿Nos acompañas?" light>
         <span id="rsvp-title">Confirma tu asistencia</span>
       </SectionHeading>

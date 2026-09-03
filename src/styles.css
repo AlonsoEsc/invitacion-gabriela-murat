@@ -55,9 +55,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .invitation-copy time { display: block; color: var(--burgundy); font: 400 1.42rem/1.3 var(--serif); letter-spacing: .03em; text-transform: uppercase; }
 .invitation-rings { display: block; width: 104px; height: auto; margin: 26px auto 0; object-fit: contain; }
 
-.countdown-section { position: relative; min-height: 540px; display: grid; place-items: center; isolation: isolate; color: var(--ivory); }
+.countdown-section { position: relative; min-height: 540px; display: grid; place-items: center; isolation: isolate; color: var(--ivory); box-shadow: 0 -26px 48px rgba(94, 26, 34, .3); }
 .countdown-section > img { position: absolute; inset: 0; z-index: -2; object-position: 50% 72%; }
-.countdown-veil { background: linear-gradient(180deg, rgba(38, 56, 32, .48), rgba(38, 56, 32, .82)); }
+.countdown-veil { background: linear-gradient(180deg, rgba(94, 26, 34, .5), rgba(65, 7, 13, .86)); }
 .countdown-content { position: relative; z-index: 2; width: 100%; padding: 78px 24px 94px; text-align: center; }
 .countdown-content h2 { margin: 0 0 24px; color: var(--gold-light); font: 500 clamp(1.7rem, 5.7vw, 2.65rem)/1 var(--serif); text-transform: uppercase; }
 .countdown-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
@@ -68,27 +68,28 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .countdown-calendar { margin-top: 34px; }
 .countdown-calendar > p { margin: 0 0 4px; color: var(--gold-light); font: 600 .66rem/1.3 var(--sans); letter-spacing: .3em; text-transform: uppercase; }
 .countdown-calendar h3 { margin: 0 0 18px; font: 500 clamp(1.5rem, 5vw, 2.2rem)/1.1 var(--serif); letter-spacing: .05em; text-transform: uppercase; }
-.button--calendar { color: var(--green-deep); background: var(--gold-light); border-color: rgba(255, 255, 255, .28); box-shadow: 0 8px 24px rgba(0, 0, 0, .2); }
+.button--calendar { color: var(--burgundy-deep); background: var(--gold-light); border-color: rgba(255, 255, 255, .28); box-shadow: 0 8px 24px rgba(0, 0, 0, .2); }
 .button--calendar:hover { background: var(--ivory); }
 
 .section-heading { display: grid; justify-items: center; margin-bottom: 38px; }
 .section-heading h2 { margin: 0; font: 500 clamp(2rem, 7vw, 3.6rem)/1.08 var(--serif); letter-spacing: .04em; text-transform: uppercase; }
 .section-heading > span:last-child { width: 62px; height: 2px; margin-top: 20px; background: var(--gold); }
 .section-heading--light { color: var(--ivory); }
-.story-section { min-height: 700px; display: grid; align-content: center; color: var(--gold-light); background-color: var(--story-red); background-image: linear-gradient(118deg, transparent 0 23%, rgba(239, 216, 154, .1) 32%, transparent 42% 57%, rgba(239, 216, 154, .07) 66%, transparent 76%), var(--paper-texture); background-position: center; background-size: auto, 420px auto; background-blend-mode: screen, multiply; }
+.story-section { min-height: 790px; display: grid; align-content: center; color: var(--gold-light); background-color: var(--story-red); background-image: linear-gradient(118deg, transparent 0 23%, rgba(239, 216, 154, .1) 32%, transparent 42% 57%, rgba(239, 216, 154, .07) 66%, transparent 76%), var(--paper-texture); background-position: center; background-size: auto, 420px auto; background-blend-mode: screen, multiply; }
 .story-section .section-heading { position: relative; z-index: 1; margin-top: 120px; }
 .story-section .section-heading > p { color: var(--ivory); }
 .story-section .section-heading > span:last-child { background: var(--gold-light); }
-.story-section p { position: relative; z-index: 1; margin: 0 auto 24px; max-width: 510px; font: 400 1.08rem/1.86 var(--serif); }
+.story-section p { position: relative; z-index: 1; margin: 0 auto 30px; max-width: 530px; font-family: "Times New Roman", Times, serif; font-size: clamp(1.18rem, 3.2vw, 1.28rem); font-weight: 400; font-style: normal; line-height: 1.82; letter-spacing: .012em; }
+.story-section p strong, .story-section p b { font-weight: 400; }
 .story-mark { position: absolute; inset: 42% 0 auto; color: rgba(223, 201, 140, .09); font: 400 6.4rem/1 var(--script); transform: rotate(-8deg); pointer-events: none; }
-.photo-break { position: relative; margin: 0; height: 610px; overflow: hidden; background: var(--story-red); }
-.photo-break img { object-position: 50% 47%; filter: saturate(1.18) contrast(1.08) brightness(.96); }
+.photo-break { position: relative; margin: 0; height: 610px; overflow: hidden; background: var(--story-red); box-shadow: inset 0 26px 54px rgba(65, 7, 13, .2), inset 0 -28px 52px rgba(251, 247, 239, .18); }
+.photo-break img { object-position: 50% 47%; filter: saturate(1.12) contrast(1.04) brightness(.98) sepia(.06); transform: scale(1.012); }
 
 .details-section { padding-block: 100px 120px; }
 .details-section .section-heading h2, .agenda-section .section-heading h2, .gift-section .section-heading h2 { font-size: clamp(1.8rem, 6.3vw, 3.25rem); }
 .venue-card { width: min(100%, 455px); margin: 0 auto; padding: 42px 40px; background: rgba(251, 247, 239, .55); border: 1px solid var(--gold); box-shadow: 10px 10px 0 rgba(111, 17, 29, .06); }
 .venue-label { margin: 0 0 12px; color: var(--burgundy); font: 500 1.6rem/1.2 var(--serif); letter-spacing: .08em; text-transform: uppercase; }
-.hotel-illustration { display: block; width: min(100%, 310px); height: auto; margin: 16px auto 25px; mix-blend-mode: multiply; }
+.hotel-illustration { display: block; width: min(100%, 350px); height: auto; margin: 8px auto 18px; filter: drop-shadow(0 7px 12px rgba(111, 17, 29, .08)); }
 .venue-time { margin: 0 0 18px; font: 500 1.05rem/1.2 var(--serif); }
 .venue-card h3 { margin: 0 0 15px; color: var(--burgundy-deep); font: 500 2.4rem/1.12 var(--serif); text-transform: uppercase; }
 .venue-card address { font: normal 400 .92rem/1.7 var(--sans); color: var(--muted); }
@@ -122,13 +123,13 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .dress-illustration-wrap { margin: -8px auto 30px; }
 .dress-illustration { display: block; width: min(100%, 390px); height: auto; margin-inline: auto; }
 .dress-section > p { max-width: 500px; margin: 0 auto 34px; font: 400 1rem/1.75 var(--serif); }
-.gift-section { min-height: 610px; display: grid; align-content: center; color: var(--ivory); background-color: var(--story-red); }
+.gift-section { min-height: 610px; display: grid; align-content: center; color: var(--ink); background-color: var(--ivory); }
 .gift-icon { margin: 0 auto 24px; color: var(--gold); font-size: 2.35rem; }
 .gift-section > p { max-width: 500px; margin: -6px auto 32px; font: 400 1.04rem/1.8 var(--serif); }
-.envelope-button { min-height: 50px; justify-self: center; display: inline-flex; align-items: center; gap: 10px; padding: 12px 24px; color: var(--burgundy); background: var(--ivory); border: 0; border-radius: 3px; cursor: pointer; }
+.envelope-button { min-height: 50px; justify-self: center; display: inline-flex; align-items: center; gap: 10px; padding: 12px 24px; color: var(--ivory); background: var(--burgundy); border: 0; border-radius: 3px; cursor: pointer; box-shadow: 0 8px 20px rgba(65, 7, 13, .16); }
 
-.rsvp-section { position: relative; padding: 90px 72px 110px; color: var(--ivory); background-color: var(--story-red); background-image: repeating-linear-gradient(0deg, rgba(223, 201, 140, .045) 0 1px, transparent 1px 4px), repeating-linear-gradient(90deg, rgba(223, 201, 140, .035) 0 1px, transparent 1px 4px), var(--paper-texture); background-position: center; background-size: auto, auto, 420px auto; background-blend-mode: soft-light, soft-light, multiply; text-align: center; }
-.rsvp-rings { display: block; width: 140px; height: auto; margin: 0 auto 30px; object-fit: contain; }
+.rsvp-section { position: relative; padding: 76px 72px 110px; color: var(--ivory); background-color: var(--story-red); background-image: radial-gradient(circle at 50% 8%, rgba(223, 201, 140, .12), transparent 34%), repeating-linear-gradient(0deg, rgba(223, 201, 140, .055) 0 1px, transparent 1px 4px), repeating-linear-gradient(90deg, rgba(223, 201, 140, .04) 0 1px, transparent 1px 4px), var(--paper-texture); background-position: center; background-size: auto, auto, auto, 420px auto; background-blend-mode: screen, soft-light, soft-light, multiply; text-align: center; }
+.rsvp-seal { display: block; width: 132px; height: 132px; margin: 0 auto 22px; object-fit: contain; filter: drop-shadow(0 8px 8px rgba(31, 5, 8, .34)); }
 .rsvp-deadline { max-width: 420px; margin: -8px auto 34px; font: 400 1rem/1.7 var(--serif); }
 .current-answer { max-width: 430px; margin: 0 auto 26px; padding: 12px 16px; color: var(--ivory); background: rgba(223, 201, 140, .14); border: 1px solid rgba(223, 201, 140, .42); font-size: .84rem; }
 .rsvp-form { width: min(100%, 450px); display: grid; gap: 27px; margin: 0 auto; text-align: left; }
@@ -166,13 +167,16 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 
 /* Each photograph blends into the actual color of its neighboring section. */
 .hero { --photo-edge-top: var(--ivory); --photo-edge-bottom: var(--ivory); }
-.countdown-section { --photo-edge-top: var(--ivory); --photo-edge-bottom: var(--story-red); }
+.countdown-section { --photo-edge-top: var(--story-red); --photo-edge-bottom: var(--story-red); }
 .photo-break { --photo-edge-top: var(--story-red); --photo-edge-bottom: var(--ivory); }
 .final-photo { --photo-edge-top: var(--story-red); --photo-edge-bottom: #211d1c; }
 :is(.hero, .countdown-section, .photo-break, .final-photo)::before,
 :is(.hero, .countdown-section, .photo-break, .final-photo)::after { content: ""; position: absolute; z-index: 1; left: 0; right: 0; height: clamp(72px, 15vw, 125px); pointer-events: none; }
 :is(.hero, .countdown-section, .photo-break, .final-photo)::before { top: 0; background: linear-gradient(to bottom, var(--photo-edge-top), transparent); }
 :is(.hero, .countdown-section, .photo-break, .final-photo)::after { bottom: 0; background: linear-gradient(to top, var(--photo-edge-bottom), transparent); }
+.countdown-section::before { height: clamp(92px, 19vw, 150px); background: linear-gradient(to bottom, var(--story-red) 0%, rgba(94, 26, 34, .76) 30%, rgba(94, 26, 34, 0) 100%); }
+.photo-break::before { height: clamp(100px, 21vw, 165px); background: linear-gradient(to bottom, var(--story-red) 0%, rgba(94, 26, 34, .82) 26%, rgba(94, 26, 34, .28) 62%, transparent 100%); }
+.photo-break::after { height: clamp(84px, 17vw, 126px); background: linear-gradient(to top, var(--ivory) 0%, rgba(245, 239, 228, .78) 22%, rgba(198, 161, 91, .13) 58%, transparent 100%); }
 .decorative-arcs { position: absolute; inset: 20px 0; width: 100%; height: calc(100% - 40px); color: var(--gold); stroke: currentColor; stroke-width: 1.15; pointer-events: none; }
 .arc-secondary { opacity: .35; stroke-width: .65; }
 .story-section .decorative-arcs { color: var(--gold-light); opacity: .8; }
@@ -226,7 +230,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .countdown-grid { gap: 2px; }
   .countdown-item strong { font-size: 1.7rem; }
   .countdown-item span { font-size: .56rem; }
-  .story-section { min-height: 650px; padding-inline: 46px; }
+  .story-section { min-height: 760px; padding-inline: 40px; }
+  .story-section p { font-size: 1.15rem; line-height: 1.78; }
   .story-mark { inset-block-start: 45%; font-size: 4.2rem; }
   .photo-break { height: 540px; }
   .venue-card { padding: 44px 24px; }
