@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
+import { QuranVerse } from "./LocalizedControls.jsx";
 
-export function InvitationEntrance({ assetPath, onOpen }) {
+export function InvitationEntrance({ assetPath, copy, onOpen }) {
   const [opening, setOpening] = useState(false);
 
   useEffect(() => {
@@ -11,17 +12,17 @@ export function InvitationEntrance({ assetPath, onOpen }) {
   }, [opening, onOpen]);
 
   return (
-    <main className={`invitation-entrance${opening ? " is-opening" : ""}`} aria-label="Invitación de Gabriela y Murad">
+    <main className={`invitation-entrance${opening ? " is-opening" : ""}`} aria-label={copy.entranceLabel}>
       <div className="entrance-envelope">
-        <div className="entrance-letter" aria-hidden="true">
-          <img src={assetPath("monogram-gm-burgundy.png")} alt="" />
-          <span>Nos casamos</span>
+        <div className="entrance-letter">
+          <QuranVerse copy={copy.quran} compact />
+          <span>{copy.entranceHint}</span>
         </div>
         <div className="envelope-fold envelope-fold--left" />
         <div className="envelope-fold envelope-fold--right" />
         <div className="envelope-fold envelope-fold--bottom" />
         <div className="envelope-flap" />
-        <button className="entrance-seal" type="button" aria-label="Abrir invitación de Gabriela y Murad" disabled={opening} onClick={() => setOpening(true)}>
+        <button className="entrance-seal" type="button" aria-label={copy.openInvitation} disabled={opening} onClick={() => setOpening(true)}>
           <svg viewBox="434 871 252 252" aria-hidden="true" focusable="false">
             <image href={assetPath("envelope-gm-serif.png")} width="1122" height="1402" />
           </svg>

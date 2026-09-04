@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-export function useScrollReveal(rootRef, enabled) {
+export function useScrollReveal(rootRef, enabled, refreshKey) {
   useEffect(() => {
     const root = rootRef.current;
     if (!enabled || !root) return;
@@ -27,5 +27,5 @@ export function useScrollReveal(rootRef, enabled) {
       preference.removeEventListener("change", configure);
       root.classList.remove("motion-ready");
     };
-  }, [rootRef, enabled]);
+  }, [rootRef, enabled, refreshKey]);
 }

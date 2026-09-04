@@ -41,8 +41,6 @@ export function OrientalFrame() {
 
 export function AgendaIllustration({ kind }) {
   const artwork = {
-    cocktail: <><path d="M14 15H58L36 39Z M36 39V60 M24 61H48 M21 23H51 M40 16L50 6" /><circle cx="55" cy="15" r="7" /></>,
-    toast: <><path d="M13 13L31 9L34 31Q33 42 24 41Q15 40 15 32Z M25 41L29 57 M20 60L38 55 M41 9L59 13L57 32Q56 42 47 41Q38 40 38 31Z M47 41L43 57 M34 55L52 60 M15 25L33 21 M40 21L58 25 M34 3L36 8 M25 2L29 7 M47 2L43 7" /></>,
     dinner: <><circle cx="37" cy="36" r="20" /><circle cx="37" cy="36" r="15" /><path d="M8 11V29Q12 35 16 29V11 M12 11V61 M64 11V61 M64 11Q53 28 64 37" /></>,
     music: <><path d="M24 47V17L56 10V41 M24 25L56 18" /><ellipse cx="17" cy="49" rx="8" ry="5" transform="rotate(-20 17 49)" /><ellipse cx="49" cy="43" rx="8" ry="5" transform="rotate(-20 49 43)" /><path d="M43 54L45 59L50 60L45 62L43 67L41 62L36 60L41 59Z M12 12L14 17L19 19L14 21L12 26L10 21L5 19L10 17Z" /></>,
     snack: <><path d="M12 31Q16 10 36 10Q56 10 60 31Z M10 39H62 M13 45L22 50L33 46L44 50L59 44 M13 53Q14 63 23 63H50Q59 62 59 53Z M10 34H62 M23 20L26 18 M36 16L39 18 M47 22L50 20" /></>,

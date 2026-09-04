@@ -13,6 +13,7 @@
   --serif: "Bodoni Moda", Georgia, serif;
   --sans: "Montserrat", Arial, sans-serif;
   --script: "Allura", "Segoe Script", cursive;
+  --arabic: "Noto Naskh Arabic", Tahoma, Arial, sans-serif;
   font-family: var(--sans);
   color: var(--ink);
   background: #211d1c;
@@ -27,6 +28,11 @@ button, a { -webkit-tap-highlight-color: transparent; }
 button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid var(--gold-light); outline-offset: 3px; }
 
 .app-root { min-height: 100svh; background: #211d1c var(--paper-texture) center / 500px auto repeat; background-blend-mode: multiply; }
+.language-switcher { position: fixed; z-index: 70; top: 14px; right: max(14px, calc((100vw - 680px) / 2 + 14px)); display: inline-flex; gap: 3px; padding: 4px; direction: ltr; color: var(--ivory); background: rgba(47, 9, 13, .82); border: 1px solid rgba(223, 201, 140, .56); border-radius: 999px; box-shadow: 0 8px 24px rgba(0, 0, 0, .24); backdrop-filter: blur(10px); }
+.language-switcher button { min-width: 38px; height: 34px; padding: 0 9px; color: inherit; background: transparent; border: 0; border-radius: 999px; cursor: pointer; font: 600 .72rem/1 var(--sans); letter-spacing: .04em; transition: color 160ms ease, background 160ms ease; }
+.language-switcher button[lang="ar"] { font: 600 1rem/1 var(--arabic); }
+.language-switcher button:hover { background: rgba(245, 239, 228, .12); }
+.language-switcher button.is-active { color: var(--burgundy-deep); background: var(--gold-light); }
 .invitation-shell { width: min(100%, 680px); margin-inline: auto; overflow: hidden; background: var(--ivory) var(--paper-texture) center top / 420px auto repeat; background-blend-mode: multiply; box-shadow: 0 0 48px rgba(0, 0, 0, .5); }
 .hero { position: relative; min-height: min(920px, 100svh); display: grid; place-items: end center; isolation: isolate; overflow: hidden; }
 .hero > img, .final-photo > img, .countdown-section > img, .photo-break > img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -47,6 +53,11 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 /* Reuse the envelope's paper margins around the card and its lower edge. */
 .invitation-paper::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--envelope-paper) center bottom / 100% auto repeat-y; filter: saturate(1.08) contrast(1.04); }
 .envelope-image { display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; filter: saturate(1.08) contrast(1.04); }
+.envelope-verse-overlay { position: absolute; z-index: 2; top: 28.5%; left: 18%; right: 18%; display: grid; place-items: center; color: var(--burgundy-deep); text-align: center; text-shadow: 0 1px 0 rgba(255, 250, 235, .75); }
+.quran-verse { margin: 0; font-style: normal; text-align: center; }
+.quran-verse__arabic { margin: 0; color: var(--burgundy-deep); font: 600 clamp(1.45rem, 5.2vw, 2.45rem)/1.35 var(--arabic); }
+.quran-verse__translation { margin: 5px 0 2px; font: 500 clamp(.76rem, 2.4vw, 1rem)/1.35 var(--serif); }
+.quran-verse cite { display: block; color: #7a5b26; font: 500 clamp(.62rem, 1.9vw, .82rem)/1.3 var(--serif); letter-spacing: .05em; }
 .invitation-copy { position: relative; width: calc(100% - 40px); margin: -68px auto 0; padding: 52px 38px 46px; background: var(--ivory); border: 1px solid var(--gold); box-shadow: 0 16px 30px rgba(65, 7, 13, .14); }
 .invitation-copy::before { content: ""; position: absolute; inset: 11px; border: 1px solid rgba(111, 17, 29, .38); pointer-events: none; }
 .invitation-monogram { display: block; width: min(100%, clamp(180px, 48vw, 270px)); height: auto; margin: 0 auto 20px; mix-blend-mode: multiply; }
@@ -111,6 +122,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .timeline li:nth-child(even)::before { left: calc(50% - 25px); }
 .timeline-icon { width: 68px; height: 68px; margin: 0 auto 9px; color: #a88735; }
 .timeline-icon svg { display: block; width: 100%; height: 100%; }
+.timeline-icon > .svg-inline--fa { width: 44px; height: 44px; margin: 12px auto; }
+.timeline-glasses { height: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
+.timeline-glasses .svg-inline--fa { width: 25px; height: 39px; }
 .timeline time { color: var(--burgundy); font: 600 1.08rem/1.3 var(--serif); }
 .timeline p { margin: 4px 0 0; font: 400 .88rem/1.5 var(--sans); }
 
@@ -126,7 +140,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .gift-section { min-height: 610px; display: grid; align-content: center; color: var(--ink); background-color: var(--ivory); }
 .gift-icon { margin: 0 auto 24px; color: var(--gold); font-size: 2.35rem; }
 .gift-section > p { max-width: 500px; margin: -6px auto 32px; font: 400 1.04rem/1.8 var(--serif); }
-.envelope-button { min-height: 50px; justify-self: center; display: inline-flex; align-items: center; gap: 10px; padding: 12px 24px; color: var(--ivory); background: var(--burgundy); border: 0; border-radius: 3px; cursor: pointer; box-shadow: 0 8px 20px rgba(65, 7, 13, .16); }
 
 .rsvp-section { position: relative; padding: 76px 72px 110px; color: var(--ivory); background-color: var(--story-red); background-image: radial-gradient(circle at 50% 8%, rgba(223, 201, 140, .12), transparent 34%), repeating-linear-gradient(0deg, rgba(223, 201, 140, .055) 0 1px, transparent 1px 4px), repeating-linear-gradient(90deg, rgba(223, 201, 140, .04) 0 1px, transparent 1px 4px), var(--paper-texture); background-position: center; background-size: auto, auto, auto, 420px auto; background-blend-mode: screen, soft-light, soft-light, multiply; text-align: center; }
 .rsvp-seal { display: block; width: 132px; height: 132px; margin: 0 auto 22px; object-fit: contain; filter: drop-shadow(0 8px 8px rgba(31, 5, 8, .34)); }
@@ -157,14 +170,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .floating-actions button, .floating-actions a { min-width: 48px; min-height: 48px; display: grid; place-items: center; color: var(--ivory); background: var(--burgundy); border: 1px solid rgba(223, 201, 140, .72); border-radius: 999px; box-shadow: 0 6px 18px rgba(0, 0, 0, .28); cursor: pointer; text-decoration: none; }
 .floating-actions a { min-width: 68px; padding-inline: 16px; font: 500 .74rem/1 var(--serif); letter-spacing: .08em; }
 
-.modal-backdrop { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 22px; background: rgba(31, 10, 10, .76); }
-.gift-modal { position: relative; width: min(100%, 470px); padding: 62px 42px 46px; background: var(--paper) var(--paper-texture) center / cover; border: 1px solid var(--gold); box-shadow: 0 24px 70px rgba(0, 0, 0, .48); text-align: center; }
-.modal-close { position: absolute; top: 14px; right: 14px; width: 44px; height: 44px; color: var(--burgundy); background: transparent; border: 0; cursor: pointer; font-size: 1.2rem; }
-.modal-envelope { color: var(--gold); font-size: 2.5rem; }
-.gift-modal h3 { margin: 20px 0 18px; color: var(--burgundy); font: 500 2rem/1.2 var(--serif); text-transform: uppercase; }
-.gift-modal p { font: 400 1rem/1.7 var(--serif); }
-.gift-modal .modal-note { margin-top: 18px; color: var(--muted); font-size: .9rem; }
-
 /* Each photograph blends into the actual color of its neighboring section. */
 .hero { --photo-edge-top: var(--ivory); --photo-edge-bottom: var(--ivory); }
 .countdown-section { --photo-edge-top: var(--story-red); --photo-edge-bottom: var(--story-red); }
@@ -193,9 +198,11 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 /* The invitation stays hidden until the guest deliberately opens the seal. */
 .invitation-entrance { width: min(100%, 680px); height: 100dvh; margin-inline: auto; overflow: hidden; color: var(--burgundy); background: var(--burgundy-deep); }
 .entrance-envelope { position: relative; width: 100%; height: 100%; perspective: 1200px; isolation: isolate; background: var(--burgundy-deep) var(--paper-texture) center / cover; background-blend-mode: multiply; }
-.entrance-letter { position: absolute; inset: 7% 6% 5%; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; border: 1px solid var(--gold); background: var(--ivory) var(--paper-texture) center / cover; box-shadow: inset 0 0 0 6px var(--ivory), inset 0 0 0 7px var(--gold); transition: transform .65s .3s ease; }
-.entrance-letter img { width: 54%; height: auto; mix-blend-mode: multiply; }
-.entrance-letter span { font: 400 .9rem/1.2 var(--serif); letter-spacing: .16em; text-transform: uppercase; }
+.entrance-letter { position: absolute; inset: 7% 6% 5%; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 12px; padding: 17% 12% 10%; border: 1px solid var(--gold); background: var(--ivory) var(--paper-texture) center / cover; box-shadow: inset 0 0 0 6px var(--ivory), inset 0 0 0 7px var(--gold); text-align: center; transition: transform .65s .3s ease; }
+.entrance-letter .quran-verse { max-width: 470px; }
+.entrance-letter .quran-verse__arabic { font-size: clamp(1.55rem, 6.2vw, 2.8rem); }
+.entrance-letter .quran-verse__translation { font-size: clamp(.82rem, 2.7vw, 1.1rem); }
+.entrance-letter span { font: 500 .68rem/1.2 var(--sans); letter-spacing: .14em; text-transform: uppercase; }
 .envelope-fold, .envelope-flap { position: absolute; inset: 0; background-image: var(--paper-texture); background-size: 420px auto; background-blend-mode: multiply; }
 .envelope-fold { z-index: 3; }
 .envelope-fold--left { background-color: #711f2b; clip-path: polygon(0 0, 53% 56%, 0 100%); }
@@ -217,6 +224,16 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .motion-ready [data-reveal][data-visible="true"] { opacity: 1; transform: translateY(0); }
 #hero-title:focus { outline: none; }
 
+.is-rtl { font-family: var(--arabic); }
+.is-rtl .hero-kicker, .is-rtl .section-heading > p, .is-rtl .countdown-item span, .is-rtl .countdown-calendar > p, .is-rtl .final-copy p:last-child { font-family: var(--arabic); letter-spacing: .03em; }
+.is-rtl .section-heading h2, .is-rtl .countdown-content h2, .is-rtl .countdown-calendar h3, .is-rtl .invitation-copy h2, .is-rtl .venue-label, .is-rtl .venue-card h3 { font-family: var(--arabic); line-height: 1.28; letter-spacing: 0; text-transform: none; }
+.is-rtl .hero h1, .is-rtl .final-copy .script, .is-rtl .story-mark { font-family: var(--arabic); }
+.is-rtl .hero h1 .partner-name--bold, .is-rtl .final-copy .script strong { font-family: var(--arabic); font-weight: 600; }
+.is-rtl .story-section p, .is-rtl .dress-section > p, .is-rtl .gift-section > p, .is-rtl .rsvp-deadline, .is-rtl .invitation-copy p { font-family: var(--arabic); font-size: 1.18rem; }
+.is-rtl .rsvp-form { text-align: right; }
+.is-rtl .calendar-menu a, .is-rtl .calendar-menu button { text-align: right; }
+.is-rtl .hero-date, .is-rtl .venue-time, .is-rtl .timeline time { unicode-bidi: isolate; }
+
 @media (max-width: 560px) {
   .hero { min-height: 820px; }
   .hero-copy { padding: 62px 22px 115px; }
@@ -226,6 +243,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .invitation-copy h2 { font-size: 1.3rem; }
   .invitation-copy p { font-size: 1.02rem; }
   .invitation-copy time { font-size: 1.2rem; }
+  .envelope-verse-overlay { top: 27%; left: 15%; right: 15%; }
   .countdown-section { min-height: 510px; }
   .countdown-grid { gap: 2px; }
   .countdown-item strong { font-size: 1.7rem; }
