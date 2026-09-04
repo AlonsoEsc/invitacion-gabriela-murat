@@ -65,29 +65,10 @@ export const translations = {
       time: "6:00 p.m.",
       hotelAlt: "Ilustración del Hotel Holiday Inn San Salvador",
     },
-    agenda: {
-      eyebrow: "Nuestro gran día",
-      title: "Agenda de la boda",
-      items: [
-        ["6:00 p.m.", "Recepción de invitados", "water"],
-        ["7:00 p.m.", "Gran entrada y bienvenida", "welcome"],
-        ["7:30 p.m.", "Banquete", "dinner"],
-        ["8:30 p.m.", "¡A bailar!", "music"],
-        ["10:00 p.m.", "Snack nocturno", "snack"],
-        ["11:00 p.m.", "Despedida y buena música", "farewell"],
-      ],
-    },
-    dress: {
-      eyebrow: "Vestimenta formal",
-      title: "Código de vestimenta",
-      alt: "Ilustración dorada de vestido formal y traje",
-      message: "Les pedimos amablemente evitar el color blanco y sus derivados —marfil, perla y hueso—, ya que están reservados especialmente para la novia.",
-      suggestions: "Mira algunas sugerencias aquí",
-    },
     gift: {
       eyebrow: "Detalles de cariño",
       title: "Sugerencia de regalo",
-      message: "Su compañía es lo más valioso para nosotros. Para quienes deseen hacernos un presente, ponemos a su disposición nuestro buzón de sobres para ayudarnos a construir nuestro hogar.",
+      message: "Que nos acompañen a celebrar este momento tan especial es, verdaderamente, el mejor regalo. Para quienes deseen obsequiarnos algo más, habrá un buzón para tarjetas y contribuciones cerca del escenario.",
     },
     rsvp: {
       eyebrow: "¿Nos acompañas?",
@@ -160,29 +141,10 @@ export const translations = {
       time: "6:00 p.m.",
       hotelAlt: "Line illustration of Holiday Inn San Salvador",
     },
-    agenda: {
-      eyebrow: "Our special day",
-      title: "Wedding schedule",
-      items: [
-        ["6:00 p.m.", "Guest reception", "water"],
-        ["7:00 p.m.", "Grand entrance and welcome", "welcome"],
-        ["7:30 p.m.", "Dinner", "dinner"],
-        ["8:30 p.m.", "Let’s dance!", "music"],
-        ["10:00 p.m.", "Late-night snack", "snack"],
-        ["11:00 p.m.", "Farewell and music", "farewell"],
-      ],
-    },
-    dress: {
-      eyebrow: "Formal attire",
-      title: "Dress code",
-      alt: "Gold line illustration of formal dress and suit",
-      message: "We kindly ask you to avoid white and its related shades —ivory, pearl and bone— as they are reserved especially for the bride.",
-      suggestions: "See some suggestions here",
-    },
     gift: {
       eyebrow: "With affection",
       title: "Gift suggestion",
-      message: "Your presence is the most precious gift to us. For those who would like to give us a present, an envelope box will be available to help us build our home together.",
+      message: "Having you celebrate this special moment with us is truly the greatest gift. For those who wish to give something more, a card box will be available for contributions near the stage.",
     },
     rsvp: {
       eyebrow: "Will you join us?",
@@ -258,29 +220,10 @@ export const translations = {
       time: "٦:٠٠ مساءً",
       hotelAlt: "رسم لفندق هوليداي إن سان سلفادور",
     },
-    agenda: {
-      eyebrow: "يومنا المميز",
-      title: "برنامج حفل الزفاف",
-      items: [
-        ["٦:٠٠ مساءً", "استقبال الضيوف", "water"],
-        ["٧:٠٠ مساءً", "الدخول الكبير والترحيب", "welcome"],
-        ["٧:٣٠ مساءً", "العشاء", "dinner"],
-        ["٨:٣٠ مساءً", "لنرقص!", "music"],
-        ["١٠:٠٠ مساءً", "وجبة خفيفة ليلية", "snack"],
-        ["١١:٠٠ مساءً", "الوداع والموسيقى", "farewell"],
-      ],
-    },
-    dress: {
-      eyebrow: "ملابس رسمية",
-      title: "قواعد اللباس",
-      alt: "رسم ذهبي لفستان رسمي وبدلة",
-      message: "نرجو منكم تجنب اللون الأبيض ودرجاته —العاجي واللؤلؤي والسكري— لأنها مخصصة للعروس.",
-      suggestions: "شاهدوا بعض الاقتراحات هنا",
-    },
     gift: {
       eyebrow: "بكل محبة",
       title: "اقتراح الهدية",
-      message: "وجودكم معنا هو أثمن هدية. ولمن يرغب في تقديم هدية، سيتوفر صندوق للمظاريف لمساعدتنا في بناء بيتنا معًا.",
+      message: "إن احتفالكم معنا بهذه اللحظة المميزة هو حقًا أعظم هدية. ولمن يرغب في تقديم شيء إضافي، سيتوفر صندوق للبطاقات والمساهمات بالقرب من المنصة.",
     },
     rsvp: {
       eyebrow: "هل ستشاركوننا؟",

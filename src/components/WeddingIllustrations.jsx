@@ -1,13 +1,3 @@
-export function DecorativeArcs() {
-  return (
-    <svg className="decorative-arcs" viewBox="0 0 680 800" preserveAspectRatio="none" fill="none" aria-hidden="true" focusable="false">
-      <path d="M22 18 C158 142 -50 260 26 405 S110 642 14 780" />
-      <path d="M658 18 C522 142 730 260 654 405 S570 642 666 780" />
-      <path className="arc-secondary" d="M10 50 C136 166 -64 278 14 421 S90 652 2 750 M670 50 C544 166 744 278 666 421 S590 652 678 750" />
-    </svg>
-  );
-}
-
 export function OrientalFrame() {
   return (
     <svg className="oriental-frame" viewBox="0 0 680 800" preserveAspectRatio="none" fill="none" aria-hidden="true" focusable="false">
@@ -37,14 +27,4 @@ export function OrientalFrame() {
       ))}
     </svg>
   );
-}
-
-export function AgendaIllustration({ kind }) {
-  const artwork = {
-    dinner: <><circle cx="37" cy="36" r="20" /><circle cx="37" cy="36" r="15" /><path d="M8 11V29Q12 35 16 29V11 M12 11V61 M64 11V61 M64 11Q53 28 64 37" /></>,
-    music: <><path d="M24 47V17L56 10V41 M24 25L56 18" /><ellipse cx="17" cy="49" rx="8" ry="5" transform="rotate(-20 17 49)" /><ellipse cx="49" cy="43" rx="8" ry="5" transform="rotate(-20 49 43)" /><path d="M43 54L45 59L50 60L45 62L43 67L41 62L36 60L41 59Z M12 12L14 17L19 19L14 21L12 26L10 21L5 19L10 17Z" /></>,
-    snack: <><path d="M12 31Q16 10 36 10Q56 10 60 31Z M10 39H62 M13 45L22 50L33 46L44 50L59 44 M13 53Q14 63 23 63H50Q59 62 59 53Z M10 34H62 M23 20L26 18 M36 16L39 18 M47 22L50 20" /></>,
-    farewell: <><path d="M10 37L19 20H51L61 37V56H10Z M18 35L24 24H46L53 35Z M10 44H61 M17 56V62H25V56 M47 56V62H55V56" /><circle cx="21" cy="46" r="4" /><circle cx="51" cy="46" r="4" /><path d="M29 50H43 M37 15C20 3 32-1 37 6C43-1 54 3 37 15Z" /></>,
-  };
-  return <svg viewBox="0 0 72 72" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">{artwork[kind]}</svg>;
 }

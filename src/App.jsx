@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { InvitationEntrance } from "./components/InvitationEntrance.jsx";
 import { LanguageSwitcher, QuranVerse } from "./components/LocalizedControls.jsx";
-import { AgendaIllustration, DecorativeArcs, OrientalFrame } from "./components/WeddingIllustrations.jsx";
+import { OrientalFrame } from "./components/WeddingIllustrations.jsx";
 import { useScrollReveal } from "./hooks/useScrollReveal.js";
 import { getInitialLanguage, translations } from "./i18n.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,12 +10,9 @@ import {
   faCalendarDays,
   faClock,
   faGift,
-  faGlassWater,
-  faHeart,
   faMapLocationDot,
   faRoute,
 } from "@fortawesome/free-solid-svg-icons";
-import { faPinterestP } from "@fortawesome/free-brands-svg-icons";
 import "@fontsource/bodoni-moda/latin-400.css";
 import "@fontsource/bodoni-moda/latin-500.css";
 import "@fontsource/bodoni-moda/latin-600.css";
@@ -287,39 +284,6 @@ export function App() {
               <a className="button button--burgundy" href="https://www.waze.com/ul?q=Holiday%20Inn%20San%20Salvador%20Santa%20Elena&navigate=yes" target="_blank" rel="noreferrer"><FontAwesomeIcon icon={faRoute} /> Waze</a>
             </div>
           </article>
-        </section>
-
-        <section className="paper-section agenda-section" aria-labelledby="agenda-title">
-          <DecorativeArcs />
-          <SectionHeading eyebrow={copy.agenda.eyebrow}><span id="agenda-title">{copy.agenda.title}</span></SectionHeading>
-          <ol className="timeline">
-            {copy.agenda.items.map(([time, label, illustration]) => (
-              <li key={time} data-reveal>
-                <div className="timeline-item">
-                  <div className="timeline-icon">
-                    {illustration === "water" && <span className="timeline-glasses"><FontAwesomeIcon icon={faGlassWater} /><FontAwesomeIcon icon={faGlassWater} /></span>}
-                    {illustration === "welcome" && <FontAwesomeIcon icon={faHeart} />}
-                    {!(["water", "welcome"].includes(illustration)) && <AgendaIllustration kind={illustration} />}
-                  </div>
-                  <time dir="ltr">{time}</time><p>{label}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </section>
-
-        <section className="dress-section" aria-labelledby="dress-title">
-          <DecorativeArcs />
-          <SectionHeading eyebrow={copy.dress.eyebrow}><span id="dress-title">{copy.dress.title}</span></SectionHeading>
-          <div className="dress-illustration-wrap" data-reveal>
-            <img
-              className="dress-illustration"
-              src={assetPath("dress-code-formal-line-art.png")}
-              alt={copy.dress.alt}
-            />
-          </div>
-          <p>{copy.dress.message}</p>
-          <a className="button button--burgundy" href="https://www.pinterest.com/search/pins/?q=vestimenta%20formal%20boda" target="_blank" rel="noreferrer"><FontAwesomeIcon icon={faPinterestP} /> {copy.dress.suggestions}</a>
         </section>
 
         <section className="paper-section gift-section" aria-labelledby="gift-title">

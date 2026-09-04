@@ -47,7 +47,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .hero h1 .partner-name--bold { font-family: var(--serif); font-size: .72em; font-weight: 600; letter-spacing: -.04em; }
 .hero-date { margin: 22px 0 0; font: 500 1.5rem/1 var(--serif); letter-spacing: .38em; }
 
-.paper-section, .dress-section { position: relative; padding: 84px 72px; text-align: center; background-color: var(--ivory); background-image: repeating-linear-gradient(0deg, rgba(94, 26, 34, .025) 0 1px, transparent 1px 4px), repeating-linear-gradient(90deg, rgba(94, 26, 34, .02) 0 1px, transparent 1px 4px), var(--paper-texture); background-size: auto, auto, 420px auto; background-blend-mode: multiply; }
+.paper-section { position: relative; padding: 84px 72px; text-align: center; background-color: var(--ivory); background-image: repeating-linear-gradient(0deg, rgba(94, 26, 34, .025) 0 1px, transparent 1px 4px), repeating-linear-gradient(90deg, rgba(94, 26, 34, .02) 0 1px, transparent 1px 4px), var(--paper-texture); background-size: auto, auto, 420px auto; background-blend-mode: multiply; }
 .invitation-card { padding: 38px 32px 90px; }
 .invitation-paper { position: relative; isolation: isolate; padding-bottom: clamp(10px, 3vw, 20px); border: 1px solid rgba(198, 161, 91, .44); box-shadow: 0 15px 35px rgba(65, 7, 13, .15); }
 /* Reuse the envelope's paper margins around the card and its lower edge. */
@@ -97,7 +97,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .photo-break img { object-position: 50% 47%; filter: saturate(1.12) contrast(1.04) brightness(.98) sepia(.06); transform: scale(1.012); }
 
 .details-section { padding-block: 100px 120px; }
-.details-section .section-heading h2, .agenda-section .section-heading h2, .gift-section .section-heading h2 { font-size: clamp(1.8rem, 6.3vw, 3.25rem); }
+.details-section .section-heading h2, .gift-section .section-heading h2 { font-size: clamp(1.8rem, 6.3vw, 3.25rem); }
 .venue-card { width: min(100%, 455px); margin: 0 auto; padding: 42px 40px; background: rgba(251, 247, 239, .55); border: 1px solid var(--gold); box-shadow: 10px 10px 0 rgba(111, 17, 29, .06); }
 .venue-label { margin: 0 0 12px; color: var(--burgundy); font: 500 1.6rem/1.2 var(--serif); letter-spacing: .08em; text-transform: uppercase; }
 .hotel-illustration { display: block; width: min(100%, 350px); height: auto; margin: 8px auto 18px; filter: drop-shadow(0 7px 12px rgba(111, 17, 29, .08)); }
@@ -111,32 +111,11 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .button--burgundy:hover { background: var(--burgundy-deep); }
 .button--outline { color: var(--burgundy); background: var(--paper); border-color: rgba(111, 17, 29, .3); box-shadow: 0 5px 14px rgba(65, 7, 13, .12); }
 
-.agenda-section { padding-block: 84px 92px; }
-.timeline { position: relative; width: 100%; max-width: 460px; margin: 0 auto; padding: 8px 0; display: grid; list-style: none; }
-.timeline::before { content: ""; position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: var(--gold); }
-.timeline li { position: relative; min-width: 0; display: grid; grid-template-columns: 1fr 1fr; text-align: center; }
-.timeline li::before { content: ""; position: absolute; top: 55px; left: 50%; width: 25px; height: 1px; background: var(--gold); }
-.timeline li::after { content: ""; position: absolute; top: 52px; left: calc(50% - 3px); width: 7px; height: 7px; border-radius: 50%; background: var(--gold); }
-.timeline-item { grid-column: 2; padding: 0 4px 28px 30px; }
-.timeline li:nth-child(even) .timeline-item { grid-column: 1; padding: 0 30px 28px 4px; }
-.timeline li:nth-child(even)::before { left: calc(50% - 25px); }
-.timeline-icon { width: 68px; height: 68px; margin: 0 auto 9px; color: #a88735; }
-.timeline-icon svg { display: block; width: 100%; height: 100%; }
-.timeline-icon > .svg-inline--fa { width: 44px; height: 44px; margin: 12px auto; }
-.timeline-glasses { height: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
-.timeline-glasses .svg-inline--fa { width: 25px; height: 39px; }
-.timeline time { color: var(--burgundy); font: 600 1.08rem/1.3 var(--serif); }
-.timeline p { margin: 4px 0 0; font: 400 .88rem/1.5 var(--sans); }
-
 .calendar-control { position: relative; display: inline-block; }
 .calendar-menu { position: absolute; top: calc(100% + 8px); left: 50%; z-index: 3; width: 245px; overflow: hidden; transform: translateX(-50%); background: var(--paper); border: 1px solid rgba(111, 17, 29, .18); box-shadow: 0 14px 35px rgba(65, 7, 13, .22); }
 .calendar-menu a, .calendar-menu button { width: 100%; min-height: 48px; display: flex; align-items: center; padding: 12px 16px; color: var(--ink); background: transparent; border: 0; cursor: pointer; text-align: left; text-decoration: none; }
 .calendar-menu a:hover, .calendar-menu button:hover { background: rgba(198, 161, 91, .16); }
 
-.dress-section { padding-block: 80px 100px; }
-.dress-illustration-wrap { margin: -8px auto 30px; }
-.dress-illustration { display: block; width: min(100%, 390px); height: auto; margin-inline: auto; }
-.dress-section > p { max-width: 500px; margin: 0 auto 34px; font: 400 1rem/1.75 var(--serif); }
 .gift-section { min-height: 610px; display: grid; align-content: center; color: var(--ink); background-color: var(--ivory); }
 .gift-icon { margin: 0 auto 24px; color: var(--gold); font-size: 2.35rem; }
 .gift-section > p { max-width: 500px; margin: -6px auto 32px; font: 400 1.04rem/1.8 var(--serif); }
@@ -182,9 +161,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .countdown-section::before { height: clamp(66px, 13vw, 104px); background: linear-gradient(to bottom, var(--story-red) 0%, rgba(94, 26, 34, .5) 28%, rgba(94, 26, 34, 0) 100%); }
 .photo-break::before { height: clamp(72px, 15vw, 116px); background: linear-gradient(to bottom, var(--story-red) 0%, rgba(94, 26, 34, .56) 24%, rgba(198, 161, 91, .08) 64%, transparent 100%); }
 .photo-break::after { height: clamp(48px, 9vw, 70px); background: linear-gradient(to top, var(--ivory) 0%, rgba(245, 239, 228, .38) 16%, rgba(198, 161, 91, .055) 48%, transparent 100%); }
-.decorative-arcs { position: absolute; inset: 20px 0; width: 100%; height: calc(100% - 40px); color: var(--gold); stroke: currentColor; stroke-width: 1.15; pointer-events: none; }
-.arc-secondary { opacity: .35; stroke-width: .65; }
-.story-section .decorative-arcs { color: var(--gold-light); opacity: .8; }
 .oriental-frame { position: absolute; z-index: 0; inset: 12px; width: calc(100% - 24px); height: calc(100% - 24px); color: var(--gold); pointer-events: none; filter: drop-shadow(0 1px 0 rgba(255, 244, 204, .24)); }
 .oriental-lattice { color: var(--gold); stroke: currentColor; stroke-width: .55; opacity: .32; }
 .oriental-arch { stroke: url(#gm-frame-gold); vector-effect: non-scaling-stroke; }
@@ -193,8 +169,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .oriental-detail, .oriental-lantern { stroke: currentColor; stroke-width: 1.35; vector-effect: non-scaling-stroke; }
 .oriental-detail { opacity: .72; }
 .oriental-lantern { opacity: .92; }
-.dress-section > :not(.decorative-arcs), .agenda-section > :not(.decorative-arcs) { position: relative; }
-
 /* The invitation stays hidden until the guest deliberately opens the seal. */
 .invitation-entrance { width: min(100%, 680px); height: 100dvh; margin-inline: auto; overflow: hidden; color: var(--burgundy); background: var(--burgundy-deep); }
 .entrance-envelope { position: relative; width: 100%; height: 100%; perspective: 1200px; isolation: isolate; background: var(--burgundy-deep) var(--paper-texture) center / cover; background-blend-mode: multiply; }
@@ -229,15 +203,15 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .is-rtl .section-heading h2, .is-rtl .countdown-content h2, .is-rtl .countdown-calendar h3, .is-rtl .invitation-copy h2, .is-rtl .venue-label, .is-rtl .venue-card h3 { font-family: var(--arabic); line-height: 1.28; letter-spacing: 0; text-transform: none; }
 .is-rtl .hero h1, .is-rtl .final-copy .script, .is-rtl .story-mark { font-family: var(--arabic); }
 .is-rtl .hero h1 .partner-name--bold, .is-rtl .final-copy .script strong { font-family: var(--arabic); font-weight: 600; }
-.is-rtl .story-section p, .is-rtl .dress-section > p, .is-rtl .gift-section > p, .is-rtl .rsvp-deadline, .is-rtl .invitation-copy p { font-family: var(--arabic); font-size: 1.18rem; }
+.is-rtl .story-section p, .is-rtl .gift-section > p, .is-rtl .rsvp-deadline, .is-rtl .invitation-copy p { font-family: var(--arabic); font-size: 1.18rem; }
 .is-rtl .rsvp-form { text-align: right; }
 .is-rtl .calendar-menu a, .is-rtl .calendar-menu button { text-align: right; }
-.is-rtl .hero-date, .is-rtl .venue-time, .is-rtl .timeline time { unicode-bidi: isolate; }
+.is-rtl .hero-date, .is-rtl .venue-time { unicode-bidi: isolate; }
 
 @media (max-width: 560px) {
   .hero { min-height: 820px; }
   .hero-copy { padding: 62px 22px 115px; }
-  .paper-section, .dress-section, .rsvp-section { padding-left: 28px; padding-right: 28px; }
+  .paper-section, .rsvp-section { padding-left: 28px; padding-right: 28px; }
   .invitation-card { padding: 22px 16px 74px; }
   .invitation-copy { width: calc(100% - 20px); margin-top: -48px; padding-inline: 24px; }
   .invitation-copy h2 { font-size: 1.3rem; }
@@ -254,13 +228,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .photo-break { height: 540px; }
   .venue-card { padding: 44px 24px; }
   .venue-card h3 { font-size: 2rem; }
-  .timeline-item { padding-left: 20px; }
-  .timeline li:nth-child(even) .timeline-item { padding-right: 20px; }
-  .timeline li::before { width: 17px; }
-  .timeline li:nth-child(even)::before { left: calc(50% - 17px); }
-  .timeline p { font-size: .76rem; }
-  .timeline time { font-size: .98rem; }
-  .decorative-arcs { opacity: .65; }
   .rsvp-actions { grid-template-columns: 1fr; }
   .final-photo { height: 690px; }
   .floating-actions { right: 14px; bottom: 16px; }
