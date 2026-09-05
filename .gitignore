@@ -6,3 +6,9 @@ design-qa.md
 AGENTS.md
 .DS_Store
 *.log
+.env
+.env.*
+!.env.example
+functions/.env
+functions/.env.*
+!functions/.env.example

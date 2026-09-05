@@ -1,7 +1,9 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { InvitationEntrance } from "./components/InvitationEntrance.jsx";
 import { LanguageSwitcher, QuranVerse } from "./components/LocalizedControls.jsx";
+import { RSVP } from "./components/RSVP.jsx";
 import { OrientalFrame } from "./components/WeddingIllustrations.jsx";
+import { useGuestInvitation } from "./hooks/useGuestInvitation.js";
 import { useScrollReveal } from "./hooks/useScrollReveal.js";
 import { getInitialLanguage, translations } from "./i18n.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -25,6 +27,7 @@ import "@fontsource/noto-naskh-arabic/arabic-600.css";
 
 const WEDDING_DATE = new Date("2026-12-26T18:00:00-06:00");
 const assetPath = (filename) => `${import.meta.env.BASE_URL}assets/${filename}`;
+const AdminApp = lazy(() => import("./admin/AdminApp.jsx").then((module) => ({ default: module.AdminApp })));
 
 function getCountdown() {
   const difference = WEDDING_DATE.getTime() - Date.now();
@@ -113,78 +116,15 @@ function CalendarMenu({ copy, language, onClose }) {
   );
 }
 
-function RSVP({ copy }) {
-  const params = new URLSearchParams(window.location.search);
-  const guest = params.get("guest") || "Co Weddings";
-  const storageKey = `gm-rsvp-${guest}`;
-  const [guests, setGuests] = useState("");
-  const [message, setMessage] = useState("");
-  const [answer, setAnswer] = useState("");
-  const [notice, setNotice] = useState("");
-
-  useEffect(() => {
-    const stored = window.localStorage.getItem(storageKey);
-    if (!stored) return;
-    try {
-      const parsed = JSON.parse(stored);
-      setAnswer(parsed.answer || "");
-      setGuests(parsed.guests || "");
-      setMessage(parsed.message || "");
-    } catch {
-      window.localStorage.removeItem(storageKey);
-    }
-  }, [storageKey]);
-
-  const saveAnswer = (nextAnswer) => {
-    if (nextAnswer === "asistire" && !guests) {
-      setNotice(copy.selectGuests);
-      return;
-    }
-    const response = { answer: nextAnswer, guests, message, updatedAt: new Date().toISOString() };
-    window.localStorage.setItem(storageKey, JSON.stringify(response));
-    setAnswer(nextAnswer);
-    setNotice(nextAnswer === "asistire" ? copy.thanks : copy.missYou);
-  };
-
-  return (
-    <section className="rsvp-section" id="rsvp" aria-labelledby="rsvp-title">
-      <img className="rsvp-seal" src={assetPath("gold-wax-seal-gm.png")} alt="" />
-      <SectionHeading eyebrow={copy.eyebrow} light>
-        <span id="rsvp-title">{copy.title}</span>
-      </SectionHeading>
-      <p className="rsvp-deadline">{copy.deadline}</p>
-      {answer && <div className="current-answer" role="status">{copy.current} <strong>{answer === "asistire" ? copy.attending : copy.notAttending}</strong></div>}
-      <form className="rsvp-form" data-reveal onSubmit={(event) => event.preventDefault()}>
-        <label>{copy.name}<input value={guest} disabled /></label>
-        <label>
-          {copy.guests}
-          <select value={guests} onChange={(event) => setGuests(event.target.value)}>
-            <option value="">{copy.choose}</option>
-            {copy.guestOptions.map((option, index) => <option key={option} value={index + 1}>{option}</option>)}
-          </select>
-        </label>
-        <label>
-          {copy.message}
-          <textarea value={message} maxLength={500} onChange={(event) => setMessage(event.target.value)} />
-          <span className="character-count">{message.length}/500</span>
-        </label>
-        <div className="rsvp-actions">
-          <button className="button button--gold" type="button" onClick={() => saveAnswer("asistire")}>{copy.attending}</button>
-          <button className="button button--light" type="button" onClick={() => saveAnswer("no-asistire")}>{copy.notAttending}</button>
-        </div>
-        {notice && <p className="form-notice" role="status">{notice}</p>}
-      </form>
-    </section>
-  );
-}
-
-export function App() {
+function InvitationApp() {
   const [language, setLanguage] = useState(getInitialLanguage);
   const [invitationOpen, setInvitationOpen] = useState(false);
   const [calendarOpen, setCalendarOpen] = useState(false);
   const invitationRef = useRef(null);
   const heroTitleRef = useRef(null);
   const copy = translations[language];
+  const invitationToken = useMemo(() => new URLSearchParams(window.location.search).get("inv"), []);
+  const guestInvitation = useGuestInvitation(invitationToken);
   const openInvitation = useCallback(() => setInvitationOpen(true), []);
   useScrollReveal(invitationRef, invitationOpen, language);
 
@@ -235,6 +175,9 @@ export function App() {
               <QuranVerse copy={copy.quran} />
             </div>
             <div className="invitation-copy" data-reveal>
+              {guestInvitation.status === "ready" && (
+                <p className="invitation-recipient"><span>{copy.rsvp.invitationFor}</span><strong>{guestInvitation.invitation.displayName}</strong></p>
+              )}
               <h2 id="invitation-title">{copy.invitation.title}</h2>
               <p>{copy.invitation.message}</p>
               <time dateTime="2026-12-26">{copy.invitation.date}</time>
@@ -292,7 +235,7 @@ export function App() {
           <p>{copy.gift.message}</p>
         </section>
 
-        <RSVP copy={copy.rsvp} />
+        <RSVP copy={copy.rsvp} language={language} token={invitationToken} invitationState={guestInvitation} />
 
         <footer className="final-photo">
           <img src={assetPath("hero-gabriela-murat.jpg")} alt={copy.final.alt} />
@@ -311,4 +254,9 @@ export function App() {
       </>}
     </div>
   );
+}
+
+export function App() {
+  const adminView = new URLSearchParams(window.location.search).get("admin") === "1";
+  return adminView ? <Suspense fallback={<main className="admin-loading">Cargando panel...</main>}><AdminApp /></Suspense> : <InvitationApp />;
 }

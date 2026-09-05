@@ -60,6 +60,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .quran-verse cite { display: block; color: #7a5b26; font: 500 clamp(.62rem, 1.9vw, .82rem)/1.3 var(--serif); letter-spacing: .05em; }
 .invitation-copy { position: relative; width: calc(100% - 40px); margin: -68px auto 0; padding: 52px 38px 46px; background: var(--ivory); border: 1px solid var(--gold); box-shadow: 0 16px 30px rgba(65, 7, 13, .14); }
 .invitation-copy::before { content: ""; position: absolute; inset: 11px; border: 1px solid rgba(111, 17, 29, .38); pointer-events: none; }
+.invitation-copy .invitation-recipient { display: grid; gap: 5px; margin: 0 auto 18px; color: var(--burgundy); line-height: 1.25; }
+.invitation-copy .invitation-recipient span { font: 600 .62rem/1.3 var(--sans); letter-spacing: .18em; text-transform: uppercase; }
+.invitation-copy .invitation-recipient strong { font: 500 1.35rem/1.25 var(--serif); }
 .invitation-monogram { display: block; width: min(100%, clamp(180px, 48vw, 270px)); height: auto; margin: 0 auto 20px; mix-blend-mode: multiply; }
 .invitation-copy h2 { margin: 8px 0 24px; font: 400 1.55rem/1.2 var(--serif); letter-spacing: .02em; text-transform: uppercase; }
 .invitation-copy p { max-width: 460px; margin: 0 auto 26px; font: 400 1.08rem/1.8 var(--serif); }
@@ -123,9 +126,17 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .rsvp-section { position: relative; padding: 76px 72px 110px; color: var(--ivory); background-color: var(--story-red); background-image: radial-gradient(circle at 50% 8%, rgba(223, 201, 140, .12), transparent 34%), repeating-linear-gradient(0deg, rgba(223, 201, 140, .055) 0 1px, transparent 1px 4px), repeating-linear-gradient(90deg, rgba(223, 201, 140, .04) 0 1px, transparent 1px 4px), var(--paper-texture); background-position: center; background-size: auto, auto, auto, 420px auto; background-blend-mode: screen, soft-light, soft-light, multiply; text-align: center; }
 .rsvp-seal { display: block; width: 132px; height: 132px; margin: 0 auto 22px; object-fit: contain; filter: drop-shadow(0 8px 8px rgba(31, 5, 8, .34)); }
 .rsvp-deadline { max-width: 420px; margin: -8px auto 34px; font: 400 1rem/1.7 var(--serif); }
+.rsvp-state { width: min(100%, 450px); margin: 0 auto; padding: 24px; color: var(--ivory); background: rgba(65, 7, 13, .32); border: 1px solid rgba(223, 201, 140, .48); }
+.rsvp-state strong { display: block; color: var(--gold-light); font: 500 1.25rem/1.3 var(--serif); }
+.rsvp-state p { margin: 9px 0 0; font: 400 .88rem/1.65 var(--sans); }
+.guest-welcome { width: min(100%, 450px); display: grid; gap: 5px; margin: 0 auto 22px; padding: 18px 20px; color: var(--burgundy-deep); background: var(--gold-light); border: 1px solid rgba(255, 255, 255, .35); }
+.guest-welcome span { font: 600 .66rem/1.3 var(--sans); letter-spacing: .18em; text-transform: uppercase; }
+.guest-welcome strong { font: 500 1.6rem/1.2 var(--serif); }
+.guest-welcome small { font: 500 .72rem/1.4 var(--sans); }
 .current-answer { max-width: 430px; margin: 0 auto 26px; padding: 12px 16px; color: var(--ivory); background: rgba(223, 201, 140, .14); border: 1px solid rgba(223, 201, 140, .42); font-size: .84rem; }
 .rsvp-form { width: min(100%, 450px); display: grid; gap: 27px; margin: 0 auto; text-align: left; }
 .rsvp-form label { display: grid; gap: 8px; font: 500 .72rem/1.45 var(--sans); letter-spacing: .05em; }
+.rsvp-form label small { color: rgba(245, 239, 228, .72); font-size: .66rem; font-weight: 400; letter-spacing: 0; }
 .rsvp-form input, .rsvp-form select, .rsvp-form textarea { width: 100%; color: var(--ivory); background: transparent; border: 0; border-bottom: 1px solid rgba(245, 239, 228, .78); border-radius: 0; padding: 11px 4px; }
 .rsvp-form input:disabled { color: var(--gold-light); opacity: 1; }
 .rsvp-form select option { color: var(--ink); background: var(--paper); }
@@ -134,6 +145,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .rsvp-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .button--gold { color: var(--burgundy-deep); background: var(--gold-light); }
 .button--light { color: var(--burgundy-deep); background: var(--ivory); }
+.rsvp-actions button:disabled { cursor: wait; opacity: .7; transform: none; }
 .form-notice { margin: -4px 0 0; color: var(--gold-light); text-align: center; font-size: .82rem; }
 
 .final-photo { position: relative; height: 770px; margin: 0; isolation: isolate; overflow: hidden; }

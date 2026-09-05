@@ -1,0 +1,4 @@
+name,email,maxAttendees,language,group,notes
+Familia de ejemplo,familia@example.com,4,es,Familia,
+Guest example,guest@example.com,2,en,Friends,
+ضيف تجريبي,guest-ar@example.com,2,ar,العائلة,
