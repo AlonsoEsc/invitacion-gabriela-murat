@@ -1,6 +1,6 @@
 # Invitación de boda - Gabriela & Murad
 
-Aplicación React + Node para invitaciones personalizadas, RSVP, panel administrativo y correos de confirmación.
+Aplicación React + Node con un enlace público único, RSVP, panel administrativo y correos de confirmación.
 
 ## Arquitectura
 

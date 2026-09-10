@@ -3,7 +3,6 @@ import { InvitationEntrance } from "./components/InvitationEntrance.jsx";
 import { LanguageSwitcher, QuranVerse } from "./components/LocalizedControls.jsx";
 import { RSVP } from "./components/RSVP.jsx";
 import { OrientalFrame } from "./components/WeddingIllustrations.jsx";
-import { useGuestInvitation } from "./hooks/useGuestInvitation.js";
 import { useScrollReveal } from "./hooks/useScrollReveal.js";
 import { getInitialLanguage, translations } from "./i18n.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -123,8 +122,6 @@ function InvitationApp() {
   const invitationRef = useRef(null);
   const heroTitleRef = useRef(null);
   const copy = translations[language];
-  const invitationToken = useMemo(() => new URLSearchParams(window.location.search).get("inv"), []);
-  const guestInvitation = useGuestInvitation(invitationToken);
   const openInvitation = useCallback(() => setInvitationOpen(true), []);
   useScrollReveal(invitationRef, invitationOpen, language);
 
@@ -175,9 +172,6 @@ function InvitationApp() {
               <QuranVerse copy={copy.quran} />
             </div>
             <div className="invitation-copy" data-reveal>
-              {guestInvitation.status === "ready" && (
-                <p className="invitation-recipient"><span>{copy.rsvp.invitationFor}</span><strong>{guestInvitation.invitation.displayName}</strong></p>
-              )}
               <h2 id="invitation-title">{copy.invitation.title}</h2>
               <p>{copy.invitation.message}</p>
               <time dateTime="2026-12-26">{copy.invitation.date}</time>
@@ -235,7 +229,7 @@ function InvitationApp() {
           <p>{copy.gift.message}</p>
         </section>
 
-        <RSVP copy={copy.rsvp} language={language} token={invitationToken} invitationState={guestInvitation} />
+        <RSVP copy={copy.rsvp} language={language} />
 
         <section className="children-note" aria-labelledby="children-note-title" data-reveal>
           <h2 id="children-note-title">{copy.childrenNote.title}</h2>

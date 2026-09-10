@@ -19,10 +19,12 @@ test("rejects RSVP above assigned capacity", () => {
 });
 
 test("allows a public RSVP with a maximum of three attendees", () => {
-  const result = validatePublicRsvpInput({ status: "attending", attendingCount: 3, language: "es" }, "Invitado");
+  const result = validatePublicRsvpInput({ status: "attending", attendingCount: 3, attendeeNames: ["Invitado", "Acompañante 1", "Acompañante 2"], guestEmail: "a@example.com", language: "es" }, "Invitado");
   assert.equal(result.attendingCount, 3);
-  assert.deepEqual(result.attendeeNames, ["Invitado"]);
-  assert.throws(() => validatePublicRsvpInput({ status: "attending", attendingCount: 4 }, "Invitado"), /invalid-attendance-count/);
+  assert.deepEqual(result.attendeeNames, ["Invitado", "Acompañante 1", "Acompañante 2"]);
+  assert.throws(() => validatePublicRsvpInput({ status: "attending", attendingCount: 4, guestEmail: "a@example.com" }, "Invitado"), /invalid-attendance-count/);
+  assert.throws(() => validatePublicRsvpInput({ status: "attending", attendingCount: 2, attendeeNames: ["Invitado"], guestEmail: "a@example.com" }, "Invitado"), /invalid-attendee-names/);
+  assert.throws(() => validatePublicRsvpInput({ status: "declined", attendingCount: 0 }, "Invitado"), /required/);
 });
 
 test("builds personalized URLs", () => {

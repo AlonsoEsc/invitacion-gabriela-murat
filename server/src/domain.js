@@ -65,11 +65,15 @@ export function validatePublicRsvpInput(input = {}, displayName) {
   const attending = input.status === "attending";
   const attendingCount = attending ? Number(input.attendingCount) : 0;
   if (attending && (!Number.isInteger(attendingCount) || attendingCount < 1 || attendingCount > 3)) throw new Error("invalid-attendance-count");
+  const attendeeNames = attending && Array.isArray(input.attendeeNames)
+    ? input.attendeeNames.map((name) => cleanText(name, 100, true))
+    : [];
+  if (attending && attendeeNames.length !== attendingCount) throw new Error("invalid-attendee-names");
   return {
     status: input.status,
     attendingCount,
-    attendeeNames: attending ? [cleanText(displayName, 100, true)] : [],
-    contactEmail: normalizeEmail(input.guestEmail),
+    attendeeNames: attending ? attendeeNames : [],
+    contactEmail: normalizeEmail(input.guestEmail, true),
     language: LANGUAGES.has(input.language) ? input.language : "es",
     message: cleanText(input.message, 500),
   };

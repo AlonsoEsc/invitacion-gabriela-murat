@@ -14,7 +14,7 @@ test("rejects invalid capacity before import", () => {
 });
 
 test("exports companion names without breaking CSV cells", () => {
-  const csv = toCsv([{ displayName: "Familia López", maxAttendees: 3, attendeeNames: ["Ana", "José"], message: "Gracias", shareUrl: "https://example.test/?inv=abc" }]);
+  const csv = toCsv([{ displayName: "Familia López", maxAttendees: 3, attendeeNames: ["Ana", "José"], message: "Gracias" }]);
   assert.match(csv, /Ana \| José/);
   assert.match(csv, /Familia López/);
 });

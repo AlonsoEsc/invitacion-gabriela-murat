@@ -1,18 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { adminEventsUrl, createInvitation, getAdminSession, importInvitations, listInvitations, loginAdmin, logoutAdmin, retryRsvpEmail, updateInvitation } from "../services/rsvpService.js";
-import { parseInvitationCsv, toCsv } from "./csv.js";
+import { adminEventsUrl, getAdminSession, listInvitations, loginAdmin, logoutAdmin, retryRsvpEmail } from "../services/rsvpService.js";
+import { toCsv } from "./csv.js";
 import "./admin.css";
-
-const EMPTY_FORM = { displayName: "", contactEmail: "", maxAttendees: 1, defaultLanguage: "es", group: "", notes: "" };
-
-function invitationUrl(invitation) {
-  const configured = import.meta.env.VITE_PUBLIC_SITE_URL;
-  const base = configured || `${window.location.origin}${import.meta.env.BASE_URL}`;
-  const url = new URL(base);
-  url.searchParams.set("inv", invitation.token);
-  url.searchParams.set("lang", invitation.defaultLanguage || "es");
-  return url.toString();
-}
 
 function download(filename, contents, type) {
   const link = document.createElement("a");
@@ -67,59 +56,6 @@ function Metric({ label, value, detail }) {
   return <article className="metric-card"><span>{label}</span><strong>{value}</strong>{detail && <small>{detail}</small>}</article>;
 }
 
-function InvitationForm({ invitation, onClose, onSaved }) {
-  const editing = Boolean(invitation);
-  const [form, setForm] = useState(() => editing ? {
-    displayName: invitation.displayName || "",
-    contactEmail: invitation.contactEmail || "",
-    maxAttendees: invitation.maxAttendees || 1,
-    defaultLanguage: invitation.defaultLanguage || "es",
-    group: invitation.group || "",
-    notes: invitation.notes || "",
-  } : EMPTY_FORM);
-  const [saving, setSaving] = useState(false);
-  const [result, setResult] = useState("");
-
-  const change = (field, value) => setForm((current) => ({ ...current, [field]: value }));
-  const submit = async (event) => {
-    event.preventDefault();
-    setSaving(true);
-    setResult("");
-    try {
-      const payload = { ...form, maxAttendees: Number(form.maxAttendees) };
-      if (editing) {
-        await updateInvitation(invitation.id, payload);
-        setResult("Cambios guardados correctamente.");
-      } else {
-        const response = await createInvitation(payload);
-        setResult(response.shareUrl);
-        setForm(EMPTY_FORM);
-      }
-      await onSaved();
-    } catch {
-      setResult(`No se pudo ${editing ? "actualizar" : "crear"} la invitación. Revisa los datos e intenta nuevamente.`);
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  return (
-    <section className="admin-form-card">
-      <div className="admin-section-title"><div><span>{editing ? "Datos del invitado" : "Nueva invitación"}</span><h2>{editing ? "Editar invitación" : "Agregar invitado"}</h2></div><button type="button" onClick={onClose}>Cerrar</button></div>
-      <form className="admin-invitation-form" onSubmit={submit}>
-        <label>Invitado o familia<input value={form.displayName} onChange={(event) => change("displayName", event.target.value)} maxLength={100} required /></label>
-        <label>Correo para confirmación<input type="email" value={form.contactEmail} onChange={(event) => change("contactEmail", event.target.value)} maxLength={254} /></label>
-        <label>Cupos permitidos<input type="number" min="1" max="3" value={form.maxAttendees} onChange={(event) => change("maxAttendees", event.target.value)} required /></label>
-        <label>Idioma<select value={form.defaultLanguage} onChange={(event) => change("defaultLanguage", event.target.value)}><option value="es">Español</option><option value="en">English</option><option value="ar">العربية</option></select></label>
-        <label>Grupo<input value={form.group} onChange={(event) => change("group", event.target.value)} placeholder="Familia, amigos, trabajo..." maxLength={80} /></label>
-        <label className="admin-form-wide">Notas internas<textarea value={form.notes} onChange={(event) => change("notes", event.target.value)} maxLength={500} /></label>
-        <button className="admin-primary" type="submit" disabled={saving}>{saving ? "Guardando..." : editing ? "Guardar cambios" : "Crear enlace"}</button>
-      </form>
-      {result && <p className="admin-result" role="status">{result}</p>}
-    </section>
-  );
-}
-
 export function AdminApp() {
   const [authReady, setAuthReady] = useState(false);
   const [user, setUser] = useState(null);
@@ -127,15 +63,13 @@ export function AdminApp() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
-  const [showForm, setShowForm] = useState(false);
-  const [editing, setEditing] = useState(null);
   const [notice, setNotice] = useState("");
 
   const loadInvitations = useCallback(async () => {
     if (!user) return;
     try {
       const result = await listInvitations();
-      setInvitations(result.invitations.map((item) => ({ ...item, shareUrl: item.shareUrl || invitationUrl(item) })));
+      setInvitations(result.invitations);
     } catch {
       setNotice("No fue posible leer la lista. Verifica la conexión con el servidor.");
     } finally {
@@ -169,42 +103,27 @@ export function AdminApp() {
     const declined = invitations.filter((item) => item.status === "declined");
     const pending = invitations.filter((item) => !item.status || item.status === "pending");
     const people = attending.reduce((sum, item) => sum + (item.attendingCount || 0), 0);
-    const capacity = invitations.reduce((sum, item) => sum + (item.maxAttendees || 0), 0);
-    return { attending: attending.length, declined: declined.length, pending: pending.length, people, capacity };
+    return { attending: attending.length, declined: declined.length, pending: pending.length, people };
   }, [invitations]);
 
   const visibleRows = useMemo(() => invitations.filter((item) => {
     const status = item.status || "pending";
     const matchesFilter = filter === "all" || status === filter || (filter === "email-error" && ["failed", "partial"].includes(item.emailStatus?.overall));
     const term = search.trim().toLowerCase();
-    const matchesSearch = !term || `${item.displayName} ${item.contactEmail || ""} ${item.group || ""}`.toLowerCase().includes(term);
+    const matchesSearch = !term || `${item.displayName} ${item.contactEmail || ""} ${(item.attendeeNames || []).join(" ")}`.toLowerCase().includes(term);
     return matchesFilter && matchesSearch;
   }), [filter, invitations, search]);
 
-  const copyLink = async (url) => {
-    await navigator.clipboard.writeText(url);
-    setNotice("Enlace copiado.");
-  };
-
-  const importCsv = async (event) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    setNotice("Procesando archivo...");
-    try {
-      const rows = parseInvitationCsv(await file.text());
-      const result = await importInvitations(rows);
-      const csv = ["name,email,maxAttendees,language,group,notes,link", ...result.created.map((item) => [item.displayName, item.contactEmail || "", item.maxAttendees, item.defaultLanguage, item.group || "", item.notes || "", item.shareUrl].map((value) => `"${String(value).replaceAll('"', '""')}"`).join(","))].join("\r\n");
-      download("enlaces-invitados.csv", csv, "text/csv;charset=utf-8");
-      setNotice(`${result.created.length} enlaces creados y descargados.`);
-      await loadInvitations();
-    } catch (error) {
-      setNotice(error.message || "No se pudo importar el archivo.");
-    } finally {
-      event.target.value = "";
-    }
-  };
-
   const exportResponses = () => download("confirmaciones-gabriela-murad.csv", toCsv(invitations), "text/csv;charset=utf-8");
+
+  const copyPublicLink = async () => {
+    const configured = import.meta.env.VITE_PUBLIC_SITE_URL || `${window.location.origin}${import.meta.env.BASE_URL}`;
+    const url = new URL(configured);
+    url.search = "";
+    url.hash = "";
+    await navigator.clipboard.writeText(url.toString());
+    setNotice("Enlace único de la invitación copiado.");
+  };
 
   const retryEmail = async (invitationId) => {
     setNotice("Reintentando el envío de correo...");
@@ -228,41 +147,37 @@ export function AdminApp() {
       </header>
 
       <section className="metrics-grid" aria-label="Resumen de confirmaciones">
-        <Metric label="Personas confirmadas" value={metrics.people} detail={`de ${metrics.capacity} cupos registrados`} />
-        <Metric label="Invitaciones aceptadas" value={metrics.attending} />
+        <Metric label="Personas confirmadas" value={metrics.people} detail={`${metrics.attending} respuestas aceptadas`} />
+        <Metric label="Confirmaciones aceptadas" value={metrics.attending} />
         <Metric label="Pendientes" value={metrics.pending} />
         <Metric label="No asistirán" value={metrics.declined} />
       </section>
 
       <section className="admin-toolbar">
-        <input type="search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Buscar invitado, correo o grupo" aria-label="Buscar invitados" />
+        <input type="search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Buscar invitado, correo o acompañante" aria-label="Buscar invitados" />
         <select value={filter} onChange={(event) => setFilter(event.target.value)} aria-label="Filtrar por estado">
           <option value="all">Todos</option><option value="pending">Pendientes</option><option value="attending">Asistirán</option><option value="declined">No asistirán</option><option value="email-error">Correo con error</option>
         </select>
-        <button type="button" onClick={() => { setEditing(null); setShowForm(true); }}>Nuevo invitado</button>
-        <label className="admin-file-button">Importar CSV<input type="file" accept=".csv,text/csv" onChange={importCsv} /></label>
+        <button type="button" onClick={copyPublicLink}>Copiar enlace único</button>
         <button type="button" onClick={exportResponses} disabled={!invitations.length}>Exportar respuestas</button>
       </section>
 
       {notice && <p className="admin-notice" role="status">{notice}</p>}
-      {showForm && <InvitationForm invitation={editing} onSaved={loadInvitations} onClose={() => { setShowForm(false); setEditing(null); }} />}
-
       <section className="admin-table-card">
-        <div className="admin-section-title"><div><span>Lista general</span><h2>{visibleRows.length} invitaciones</h2></div><small>Actualización automática</small></div>
+        <div className="admin-section-title"><div><span>Lista general</span><h2>{visibleRows.length} respuestas</h2></div><small>Actualización automática</small></div>
         {loading ? <p className="admin-empty">Cargando invitados...</p> : visibleRows.length === 0 ? <p className="admin-empty">No hay invitados que coincidan con el filtro.</p> : (
           <div className="admin-table-wrap">
             <table>
-              <thead><tr><th>Invitado</th><th>Cupos</th><th>Respuesta</th><th>Asistentes</th><th>Acompañantes</th><th>Correo</th><th>Actualización</th><th>Acciones</th></tr></thead>
+              <thead><tr><th>Invitado</th><th>Respuesta</th><th>Total</th><th>Asistentes y acompañantes</th><th>Confirmación</th><th>Actualización</th><th>Acciones</th></tr></thead>
               <tbody>{visibleRows.map((item) => (
                 <tr key={item.id}>
-                  <td><strong>{item.displayName}</strong><small>{item.contactEmail || "Sin correo"}{item.group ? ` · ${item.group}` : ""}</small></td>
-                  <td>{item.maxAttendees}</td>
+                  <td><strong>{item.displayName}</strong><small>{item.contactEmail || "Sin correo"}</small></td>
                   <td><span className={`status status--${item.status || "pending"}`}>{item.status === "attending" ? "Asistirá" : item.status === "declined" ? "No asistirá" : "Pendiente"}</span></td>
                   <td>{item.attendingCount || 0}</td>
                   <td>{item.attendeeNames?.length ? item.attendeeNames.join(", ") : "-"}{item.message && <small>Mensaje: {item.message}</small>}</td>
                   <td><span className={`email-status email-status--${item.emailStatus?.overall || "pending"}`}>{item.emailStatus?.overall === "sent" ? "Enviado" : item.emailStatus?.overall === "failed" ? "Error" : item.emailStatus?.overall === "partial" ? "Parcial" : "Pendiente"}</span></td>
                   <td>{formatDate(item.respondedAt)}</td>
-                  <td><div className="row-actions"><button type="button" onClick={() => copyLink(item.shareUrl)}>Copiar enlace</button><button type="button" onClick={() => { setEditing(item); setShowForm(true); window.scrollTo({ top: 0, behavior: "smooth" }); }}>Editar</button>{["failed", "partial"].includes(item.emailStatus?.overall) && <button type="button" onClick={() => retryEmail(item.id)}>Reenviar correo</button>}</div></td>
+                  <td><div className="row-actions">{["failed", "partial"].includes(item.emailStatus?.overall) ? <button type="button" onClick={() => retryEmail(item.id)}>Reenviar correo</button> : <span>-</span>}</div></td>
                 </tr>
               ))}</tbody>
             </table>

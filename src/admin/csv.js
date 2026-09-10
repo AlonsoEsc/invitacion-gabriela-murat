@@ -52,19 +52,16 @@ export function parseInvitationCsv(source) {
 
 export function toCsv(rows) {
   const escape = (value) => `"${String(value ?? "").replaceAll('"', '""')}"`;
-  const headers = ["Invitado", "Correo", "Grupo", "Cupos", "Estado", "Asistentes", "Nombres", "Mensaje", "Correo de confirmacion", "Fecha de respuesta", "Enlace"];
+  const headers = ["Invitado", "Correo", "Estado", "Asistentes", "Nombres", "Mensaje", "Correo de confirmacion", "Fecha de respuesta"];
   const lines = rows.map((row) => [
     row.displayName,
     row.contactEmail,
-    row.group,
-    row.maxAttendees,
     row.status || "pending",
     row.attendingCount || 0,
     (row.attendeeNames || []).join(" | "),
     row.message,
     row.emailStatus?.overall || "not-sent",
     row.respondedAt ? new Date(row.respondedAt).toISOString() : "",
-    row.shareUrl,
   ].map(escape).join(","));
   return [headers.map(escape).join(","), ...lines].join("\r\n");
 }

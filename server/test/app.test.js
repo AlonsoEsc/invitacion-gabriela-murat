@@ -66,11 +66,34 @@ test("creates a general RSVP without a personalized invitation", async () => {
   const result = await fetch(`${baseUrl}/api/rsvp/public`, {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify({ responseId, displayName: "Invitada general", status: "declined", attendingCount: 0, language: "es", message: "Gracias" }),
+    body: JSON.stringify({ responseId, displayName: "Invitada general", guestEmail: "invitada@example.com", status: "declined", attendingCount: 0, language: "es", message: "Gracias" }),
   });
   assert.equal(result.status, 200);
   const body = await result.json();
   assert.equal(body.saved, true);
   assert.equal(body.responseId, responseId);
   assert.equal((await database().findByPublicResponseId(responseId)).status, "declined");
+});
+
+test("stores the primary guest, email, and companion names from the public link", async () => {
+  const responseId = "public-family-response-12345";
+  const result = await fetch(`${baseUrl}/api/rsvp/public`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({
+      responseId,
+      displayName: "Ana Pérez",
+      guestEmail: "ana@example.com",
+      status: "attending",
+      attendingCount: 3,
+      attendeeNames: ["Ana Pérez", "Luis Pérez", "Marta Pérez"],
+      language: "es",
+      message: "Allí estaremos",
+    }),
+  });
+  assert.equal(result.status, 200);
+  const saved = await database().findByPublicResponseId(responseId);
+  assert.equal(saved.contactEmail, "ana@example.com");
+  assert.equal(saved.attendingCount, 3);
+  assert.deepEqual(saved.attendeeNames, ["Ana Pérez", "Luis Pérez", "Marta Pérez"]);
 });
