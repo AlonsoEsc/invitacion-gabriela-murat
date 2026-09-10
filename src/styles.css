@@ -123,7 +123,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .gift-icon { margin: 0 auto 24px; color: var(--gold); font-size: 2.35rem; }
 .gift-section > p { max-width: 500px; margin: -6px auto 32px; font: 400 1.04rem/1.8 var(--serif); }
 
-.rsvp-section { position: relative; padding: 76px 72px 110px; color: var(--ivory); background-color: var(--story-red); background-image: radial-gradient(circle at 50% 8%, rgba(223, 201, 140, .12), transparent 34%), repeating-linear-gradient(0deg, rgba(223, 201, 140, .055) 0 1px, transparent 1px 4px), repeating-linear-gradient(90deg, rgba(223, 201, 140, .04) 0 1px, transparent 1px 4px), var(--paper-texture); background-position: center; background-size: auto, auto, auto, 420px auto; background-blend-mode: screen, soft-light, soft-light, multiply; text-align: center; }
+.rsvp-section { position: relative; padding: 76px 72px 0; color: var(--ivory); background-color: var(--story-red); background-image: radial-gradient(circle at 50% 8%, rgba(223, 201, 140, .12), transparent 34%), repeating-linear-gradient(0deg, rgba(223, 201, 140, .055) 0 1px, transparent 1px 4px), repeating-linear-gradient(90deg, rgba(223, 201, 140, .04) 0 1px, transparent 1px 4px), var(--paper-texture); background-position: center; background-size: auto, auto, auto, 420px auto; background-blend-mode: screen, soft-light, soft-light, multiply; text-align: center; }
 .rsvp-seal { display: block; width: 132px; height: 132px; margin: 0 auto 22px; object-fit: contain; filter: drop-shadow(0 8px 8px rgba(31, 5, 8, .34)); }
 .rsvp-deadline { max-width: 420px; margin: -8px auto 34px; font: 400 1rem/1.7 var(--serif); }
 .rsvp-state { width: min(100%, 450px); margin: 0 auto; padding: 24px; color: var(--ivory); background: rgba(65, 7, 13, .32); border: 1px solid rgba(223, 201, 140, .48); }
@@ -148,8 +148,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .rsvp-actions button:disabled { cursor: wait; opacity: .7; transform: none; }
 .form-notice { margin: -4px 0 0; color: var(--gold-light); text-align: center; font-size: .82rem; }
 
-.children-note { position: relative; padding: 70px 72px 78px; color: var(--gold-light); background: var(--story-red) var(--paper-texture) center / 420px auto; background-blend-mode: multiply; text-align: center; border-top: 1px solid rgba(223, 201, 140, .22); }
-.children-note__eyebrow { margin: 0 0 8px; color: var(--ivory); font: 500 .72rem/1.4 var(--sans); letter-spacing: .28em; text-transform: uppercase; }
+.children-note { position: relative; padding: 64px 72px 78px; color: var(--gold-light); background: var(--story-red) var(--paper-texture) center / 420px auto; background-blend-mode: multiply; text-align: center; }
 .children-note h2 { margin: 0 0 22px; color: var(--gold-light); font: 500 clamp(1.65rem, 5.8vw, 2.55rem)/1.15 var(--serif); text-transform: uppercase; }
 .children-note h2::after { content: ""; display: block; width: 58px; height: 2px; margin: 18px auto 0; background: var(--gold); }
 .children-note > p:last-child { max-width: 500px; margin: 0 auto; color: var(--ivory); font: 400 1.05rem/1.8 var(--serif); }
@@ -230,7 +229,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .hero { min-height: 820px; }
   .hero-copy { padding: 62px 22px 115px; }
   .paper-section, .rsvp-section, .children-note { padding-left: 28px; padding-right: 28px; }
-  .children-note { padding-top: 96px; }
+  .children-note { padding-top: 80px; }
   .invitation-card { padding: 22px 16px 74px; }
   .invitation-copy { width: calc(100% - 20px); margin-top: -48px; padding-inline: 24px; }
   .invitation-copy h2 { font-size: 1.3rem; }

@@ -238,7 +238,6 @@ function InvitationApp() {
         <RSVP copy={copy.rsvp} language={language} token={invitationToken} invitationState={guestInvitation} />
 
         <section className="children-note" aria-labelledby="children-note-title" data-reveal>
-          <p className="children-note__eyebrow">{copy.childrenNote.eyebrow}</p>
           <h2 id="children-note-title">{copy.childrenNote.title}</h2>
           <p>{copy.childrenNote.message}</p>
         </section>
