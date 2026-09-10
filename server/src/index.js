@@ -1,6 +1,13 @@
-import "dotenv/config";
+import dotenv from "dotenv";
+import { fileURLToPath } from "node:url";
 import { createApp, connectDatabase } from "./app.js";
 import { closeDatabase } from "./database.js";
+
+dotenv.config({
+  path: fileURLToPath(new URL("../.env", import.meta.url)),
+  override: true,
+  quiet: true,
+});
 
 const required = ["MYSQL_HOST", "MYSQL_DATABASE", "MYSQL_USER", "JWT_SECRET", "ADMIN_EMAIL"];
 for (const name of required) {
