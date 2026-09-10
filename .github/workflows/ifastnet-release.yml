@@ -1,0 +1,47 @@
+name: Paquete para iFastNet
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "public/**"
+      - "server/**"
+      - "scripts/package-ifastnet.ps1"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/ifastnet-release.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    runs-on: windows-latest
+    steps:
+      - name: Descargar código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar frontend
+        run: npm ci
+
+      - name: Instalar backend
+        run: npm ci --prefix server
+
+      - name: Construir paquete
+        run: npm run package:ifastnet
+
+      - name: Publicar descarga
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view ifastnet-v1 >/dev/null 2>&1 || gh release create ifastnet-v1 --target "$GITHUB_SHA" --title "Paquete para iFastNet" --notes "Frontend y backend Node.js/MySQL listos para cargar en cPanel."
+          gh release upload ifastnet-v1 release/invitacion-ifastnet.zip --clobber
