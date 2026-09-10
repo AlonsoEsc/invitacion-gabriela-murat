@@ -172,7 +172,7 @@ export async function connectDatabase(config = process.env) {
     host: config.MYSQL_HOST,
     port: Number(config.MYSQL_PORT || 3306),
     user: config.MYSQL_USER,
-    password: config.DB_PASSWORD || config.MYSQL_PASSWORD,
+    password: config.DATABASE_CREDENTIAL || config.DB_PASSWORD || config.MYSQL_PASSWORD,
     database: config.MYSQL_DATABASE,
     waitForConnections: true,
     connectionLimit: Number(config.MYSQL_CONNECTION_LIMIT || 5),

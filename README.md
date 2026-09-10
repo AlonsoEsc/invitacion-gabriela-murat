@@ -31,7 +31,7 @@ Para desarrollo persistente, crea `server/.env` desde `server/.env.example`, con
 
 ## Variables del servidor
 
-- `MYSQL_HOST`, `MYSQL_PORT`, `MYSQL_DATABASE`, `MYSQL_USER`, `DB_PASSWORD`: acceso a MySQL. El servidor también acepta `MYSQL_PASSWORD` para compatibilidad local.
+- `MYSQL_HOST`, `MYSQL_PORT`, `MYSQL_DATABASE`, `MYSQL_USER`, `DATABASE_CREDENTIAL`: acceso a MySQL. El servidor también acepta `DB_PASSWORD` y `MYSQL_PASSWORD` para compatibilidad local.
 - `MYSQL_CONNECTION_LIMIT`: conexiones simultáneas; `5` es suficiente para el hosting compartido.
 - `JWT_SECRET`: secreto aleatorio de al menos 32 caracteres.
 - `ADMIN_EMAIL`: correo permitido para el panel.
