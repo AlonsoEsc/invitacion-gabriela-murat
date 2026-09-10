@@ -1,151 +1,95 @@
 # Invitación de boda - Gabriela & Murad
 
-Invitación digital trilingüe con enlaces personalizados, RSVP persistente, nombres de acompañantes, panel administrativo en tiempo real y confirmaciones por correo.
+Aplicación completa para gestionar invitaciones personalizadas y confirmaciones de boda.
 
 ## Arquitectura
 
-- **Frontend:** React 19 y Vite, publicado en GitHub Pages.
-- **Base de datos:** Cloud Firestore.
-- **API pública y administrativa:** Firebase Cloud Functions callable.
-- **Acceso administrativo:** Firebase Authentication con correo y contraseña.
-- **Correo transaccional:** Resend desde Cloud Functions.
-- **Tiempo real:** listener de Firestore en el panel administrativo.
+- **Frontend:** React 19 y Vite.
+- **Backend:** Node.js 22 y Express 5.
+- **Base de datos:** MongoDB 8 mediante Mongoose.
+- **Autenticación administrativa:** JWT almacenado en una cookie `HttpOnly`.
+- **Correos:** API de Resend desde el servidor.
+- **Actualización del panel:** Server-Sent Events y respaldo por consulta periódica.
+- **Producción:** una imagen Docker sirve la API y el frontend; MongoDB se ejecuta como servicio separado.
 
-La invitación pública nunca escribe directamente en Firestore. El token se envía a una función que valida la invitación, cupos, acompañantes, correo y fecha límite. Las reglas de Firestore solo permiten lectura administrativa autenticada.
+## Funcionalidad
 
-## Flujo para invitados
+- Enlaces personalizados con tokens aleatorios.
+- Cupos individuales por invitación.
+- RSVP con nombres de acompañantes y correo de confirmación.
+- Respuestas idempotentes, fecha límite y control de frecuencia.
+- Panel privado para crear, editar, buscar, filtrar e importar invitados.
+- Importación y exportación CSV.
+- Reintento de correos con error.
+- Español, inglés y árabe.
 
-Cada enlace utiliza un token aleatorio:
+## Desarrollo local rápido
 
-```text
-https://alonsoesc.github.io/invitacion-gabriela-murat/?inv=TOKEN&lang=es
-```
-
-El invitado puede:
-
-1. Ver su nombre dentro de la invitación.
-2. Consultar la cantidad máxima de cupos asignada.
-3. Indicar si asistirá o no.
-4. Registrar el nombre de cada acompañante.
-5. Agregar un mensaje opcional.
-6. Recibir una confirmación por correo.
-7. Volver a abrir el enlace y actualizar su respuesta antes de la fecha límite.
-
-La novia recibe simultáneamente un correo con la respuesta y puede consultarla en el panel.
-
-## Panel administrativo
-
-El panel se abre en:
-
-```text
-https://alonsoesc.github.io/invitacion-gabriela-murat/?admin=1
-```
-
-Incluye:
-
-- Personas confirmadas y capacidad total.
-- Invitaciones aceptadas, rechazadas y pendientes.
-- Actualización automática sin recargar la página.
-- Buscador y filtros.
-- Nombres de acompañantes y mensajes.
-- Estado de entrega de correo y reintento cuando falle.
-- Creación individual de invitaciones.
-- Edición de nombre, correo, idioma, grupo y cupos sin cambiar el enlace.
-- Importación de hasta 500 filas por CSV.
-- Descarga automática de los enlaces creados.
-- Exportación de respuestas a CSV.
-
-## Datos requeridos
-
-La plantilla está en [`templates/invitados-ejemplo.csv`](templates/invitados-ejemplo.csv). Las columnas son:
-
-| Columna | Obligatoria | Descripción |
-|---|---:|---|
-| `name` | Sí | Nombre de la persona o familia que verá el invitado. |
-| `email` | Recomendado | Destino del comprobante. Si falta, se solicitará en el formulario. |
-| `maxAttendees` | Sí | Cupos autorizados, entre 1 y 20. |
-| `language` | No | `es`, `en` o `ar`. El valor predeterminado es `es`. |
-| `group` | No | Familia, amigos, trabajo u otra categoría. |
-| `notes` | No | Información interna que no se muestra al invitado. |
-
-No se debe importar la lista definitiva más de una vez. Antes de una segunda carga se debe verificar y depurar el archivo para evitar registros duplicados.
-
-## Desarrollo local
+Requiere Node.js 22. El modo local crea una base MongoDB temporal automáticamente, por lo que no exige instalar MongoDB ni Docker.
 
 ```powershell
-npm.cmd install
+npm install
+npm install --prefix server
 Copy-Item .env.example .env.local
-npm.cmd run dev -- --host 127.0.0.1 --port 5174
+npm run dev:full
 ```
 
-Completa `.env.local` con la configuración web de Firebase. La configuración pública identifica el proyecto, pero no concede permisos por sí sola; la seguridad depende de Authentication, las reglas y las Cloud Functions.
+La invitación se abre en `http://127.0.0.1:5174/` y el panel en `http://127.0.0.1:5174/?admin=1`.
 
-Para probar el backend con emuladores:
+La API escucha en `http://127.0.0.1:4001/`; el estado se puede consultar en `/api/health`.
+
+Credenciales exclusivas del modo local:
+
+- Correo: `admin@local.test`
+- Contraseña: `admin-demo-2026`
+
+Los datos temporales se eliminan al detener el proceso. Para desarrollo con una base persistente, configura `server/.env` y ejecuta `npm run dev:api:persistent` junto con `npm run dev`.
+
+## Variables del servidor
+
+Configura `server/.env`:
+
+- `MONGODB_URI`: conexión a MongoDB.
+- `JWT_SECRET`: secreto aleatorio de al menos 32 caracteres.
+- `ADMIN_EMAIL`: correo permitido para el panel.
+- `ADMIN_PASSWORD_HASH`: hash bcrypt recomendado para producción.
+- `ADMIN_PASSWORD`: contraseña directa, solamente para desarrollo local.
+- `COOKIE_SECURE=true`: obligatorio detrás de HTTPS en producción.
+- `RESEND_API_KEY`: clave de Resend.
+- `COUPLE_EMAILS`: uno o más correos separados por comas.
+- `EMAIL_FROM`: remitente verificado en Resend; para este proyecto se usará `Invitaciones Gabriela & Murad <invitaciones@gabrielaymurad.site>`.
+- `EMAIL_REPLY_TO`: correo real en el que los novios recibirán las respuestas de los invitados.
+- `PUBLIC_SITE_URL`: dominio público de la invitación.
+- `RSVP_DEADLINE`: fecha límite en formato ISO.
+
+Para crear un hash bcrypt sin guardar la contraseña en el historial:
 
 ```powershell
-npm.cmd install --prefix functions
-npx.cmd firebase-tools emulators:start
+node -e "import('bcryptjs').then(async ({default:b}) => console.log(await b.hash(process.argv[1], 12)))" "CAMBIA_ESTA_CONTRASEÑA"
 ```
 
-En `.env.local`, establece `VITE_USE_FIREBASE_EMULATORS=true`.
+## Docker
 
-## Configuración de Firebase
-
-1. Crear un proyecto de Firebase y registrar una aplicación web.
-2. Activar **Authentication > Email/Password**.
-3. Crear la base de datos Firestore en una región cercana.
-4. Crear el usuario administrador de la novia en Authentication.
-5. Crear manualmente `admins/{UID}` en Firestore con `{ "active": true }`.
-6. Copiar `.env.example` a `.env.local` y completar los valores web.
-7. Crear `functions/.env.<project-id>` a partir de `functions/.env.example`.
-8. Configurar el secreto de Resend:
+1. Copia `server/.env.example` a `server/.env` y completa los valores.
+2. Ejecuta:
 
 ```powershell
-npx.cmd firebase-tools functions:secrets:set RESEND_API_KEY --project <project-id>
+docker compose up --build -d
 ```
 
-9. Verificar un dominio en Resend y configurar `EMAIL_FROM` con una dirección de ese dominio.
-10. Publicar reglas y funciones:
+La aplicación queda disponible en `http://localhost:8080/`. En el servidor público se recomienda colocar Nginx, Caddy o el proxy del proveedor delante del puerto 4001 y activar HTTPS.
+
+## Pruebas y compilación
 
 ```powershell
-npx.cmd firebase-tools deploy --project <project-id> --only functions,firestore:rules,firestore:indexes
+npm test
+npm run build:pages
 ```
 
-El proyecto debe usar el plan Blaze para desplegar Cloud Functions. Se recomienda configurar alertas y presupuesto en Google Cloud antes del despliegue.
+## Seguridad operativa
 
-## Variables de GitHub
-
-La publicación del frontend lee estas variables del repositorio:
-
-- `FIREBASE_PROJECT_ID`
-- `VITE_FIREBASE_API_KEY`
-- `VITE_FIREBASE_AUTH_DOMAIN`
-- `VITE_FIREBASE_STORAGE_BUCKET`
-- `VITE_FIREBASE_MESSAGING_SENDER_ID`
-- `VITE_FIREBASE_APP_ID`
-
-El workflow del backend requiere:
-
-- Secreto `FIREBASE_SERVICE_ACCOUNT`.
-- Secreto `COUPLE_EMAILS`.
-- Variable `EMAIL_FROM`.
-- Secreto de Firebase `RESEND_API_KEY` creado en Secret Manager.
-
-## Pruebas
-
-```powershell
-npm.cmd test
-npm.cmd run build:pages
-```
-
-Las pruebas cubren validación de cupos, nombres de asistentes, correos, tokens, generación de enlaces y procesamiento de CSV.
-
-## Controles operativos recomendados
-
-- Activar Firebase App Check antes de distribuir enlaces masivamente.
-- Definir presupuesto y alertas de consumo.
-- Crear una cuenta administrativa individual para cada persona autorizada.
-- Exportar un respaldo de confirmaciones al menos una vez por semana.
-- Revisar el panel de correos fallidos.
-- Cerrar la edición automáticamente después del 1 de diciembre de 2026.
-- Conservar únicamente los datos necesarios y eliminarlos después del evento según lo acordado con los novios.
+- No publiques archivos `.env`.
+- Usa HTTPS y `COOKIE_SECURE=true`.
+- Utiliza una contraseña administrativa única y un `JWT_SECRET` aleatorio.
+- Restringe MongoDB a la red privada del servidor; no expongas el puerto 27017 a Internet.
+- Mantén copias de seguridad periódicas de la base de datos.

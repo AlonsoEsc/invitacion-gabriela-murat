@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { submitRsvp } from "../services/rsvpService.js";
+import { submitPublicRsvp, submitRsvp } from "../services/rsvpService.js";
 
 const assetPath = (filename) => `${import.meta.env.BASE_URL}assets/${filename}`;
 
@@ -23,7 +23,10 @@ function StateMessage({ title, message }) {
 }
 
 export function RSVP({ copy, language, token, invitationState }) {
+  const personalized = Boolean(token);
   const invitation = invitationState.invitation;
+  const initialGuest = useMemo(() => new URLSearchParams(window.location.search).get("guest") || "", []);
+  const [guestName, setGuestName] = useState(initialGuest);
   const [status, setStatus] = useState("");
   const [count, setCount] = useState("");
   const [attendeeNames, setAttendeeNames] = useState([]);
@@ -40,15 +43,14 @@ export function RSVP({ copy, language, token, invitationState }) {
     setMessage(invitation.response?.message || "");
   }, [invitation]);
 
-  const countOptions = useMemo(
-    () => Array.from({ length: invitation?.maxAttendees || 0 }, (_, index) => index + 1),
-    [invitation?.maxAttendees],
-  );
+  const maximumGuests = personalized ? Math.min(invitation?.maxAttendees || 3, 3) : 3;
+  const countOptions = useMemo(() => Array.from({ length: maximumGuests }, (_, index) => index + 1), [maximumGuests]);
 
   const changeCount = (value) => {
     setCount(value);
     const nextCount = Number(value) || 0;
-    setAttendeeNames((current) => Array.from({ length: nextCount }, (_, index) => current[index] || (index === 0 ? invitation.displayName : "")));
+    const primaryName = personalized ? invitation?.displayName : guestName;
+    setAttendeeNames((current) => Array.from({ length: nextCount }, (_, index) => current[index] || (index === 0 ? primaryName || "" : "")));
   };
 
   const changeAttendee = (index, value) => {
@@ -58,28 +60,40 @@ export function RSVP({ copy, language, token, invitationState }) {
   const save = async (nextStatus) => {
     setNotice("");
     const attending = nextStatus === "attending";
-    const normalizedNames = attendeeNames.map((name) => name.trim());
+    const normalizedNames = personalized ? attendeeNames.map((name) => name.trim()) : (attending ? [guestName.trim()] : []);
 
-    if (attending && (!count || normalizedNames.length !== Number(count) || normalizedNames.some((name) => !name))) {
+    if (!personalized && !guestName.trim()) {
+      setNotice(copy.nameRequired);
+      return;
+    }
+
+    if (attending && (!count || (personalized && (normalizedNames.length !== Number(count) || normalizedNames.some((name) => !name))))) {
       setNotice(copy.completeAttendees);
       return;
     }
-    if (!invitation.hasContactEmail && !email.trim()) {
+    if (personalized && !invitation.hasContactEmail && !email.trim()) {
       setNotice(copy.emailRequired);
       return;
     }
 
     setSubmitting(true);
     try {
-      const result = await submitRsvp({
-        token,
+      const payload = {
         language,
         status: nextStatus,
         attendingCount: attending ? Number(count) : 0,
         attendeeNames: attending ? normalizedNames : [],
         guestEmail: email.trim() || undefined,
         message: message.trim(),
-      });
+      };
+      const result = personalized
+        ? await submitRsvp({ ...payload, token })
+        : await submitPublicRsvp({
+          ...payload,
+          displayName: guestName.trim(),
+          responseId: window.localStorage.getItem("gm-public-rsvp-id") || undefined,
+        });
+      if (!personalized && result.responseId) window.localStorage.setItem("gm-public-rsvp-id", result.responseId);
       setStatus(nextStatus);
       setNotice(result.emailStatus === "sent" ? copy.savedAndEmailed : copy.savedEmailPending);
     } catch (error) {
@@ -102,19 +116,18 @@ export function RSVP({ copy, language, token, invitationState }) {
       </SectionHeading>
       <p className="rsvp-deadline">{copy.deadline}</p>
 
-      {invitationState.status === "loading" && <StateMessage title={copy.loadingTitle} message={copy.loading} />}
-      {invitationState.status === "missing" && <StateMessage title={copy.personalLinkTitle} message={copy.personalLinkRequired} />}
-      {invitationState.status === "not-found" && <StateMessage title={copy.invalidLinkTitle} message={copy.invalidLink} />}
-      {invitationState.status === "unavailable" && <StateMessage title={copy.setupTitle} message={copy.setupPending} />}
-      {invitationState.status === "error" && <StateMessage title={copy.errorTitle} message={copy.loadError} />}
+      {personalized && invitationState.status === "loading" && <StateMessage title={copy.loadingTitle} message={copy.loading} />}
+      {personalized && invitationState.status === "not-found" && <StateMessage title={copy.invalidLinkTitle} message={copy.invalidLink} />}
+      {personalized && invitationState.status === "unavailable" && <StateMessage title={copy.setupTitle} message={copy.setupPending} />}
+      {personalized && invitationState.status === "error" && <StateMessage title={copy.errorTitle} message={copy.loadError} />}
 
-      {invitationState.status === "ready" && (
+      {(!personalized || invitationState.status === "ready") && (
         <>
-          <div className="guest-welcome" data-reveal>
+          {personalized && <div className="guest-welcome" data-reveal>
             <span>{copy.invitationFor}</span>
             <strong>{invitation.displayName}</strong>
-            <small>{copy.availablePlaces.replace("{count}", invitation.maxAttendees)}</small>
-          </div>
+            <small>{copy.availablePlaces.replace("{count}", maximumGuests)}</small>
+          </div>}
           {status && (
             <div className="current-answer" role="status">
               {copy.current} <strong>{status === "attending" ? copy.attending : copy.notAttending}</strong>
@@ -123,7 +136,7 @@ export function RSVP({ copy, language, token, invitationState }) {
           <form className="rsvp-form" data-reveal onSubmit={(event) => event.preventDefault()}>
             <label>
               {copy.name}
-              <input value={invitation.displayName} disabled />
+              <input value={personalized ? invitation.displayName : guestName} maxLength={100} onChange={(event) => setGuestName(event.target.value)} disabled={personalized || submitting} placeholder={copy.namePlaceholder} />
             </label>
             <label>
               {copy.guests}
@@ -133,14 +146,14 @@ export function RSVP({ copy, language, token, invitationState }) {
               </select>
             </label>
 
-            {attendeeNames.map((name, index) => (
+            {personalized && attendeeNames.map((name, index) => (
               <label key={index}>
                 {index === 0 ? copy.primaryAttendee : copy.companionName.replace("{number}", index)}
                 <input value={name} maxLength={100} onChange={(event) => changeAttendee(index, event.target.value)} disabled={submitting} />
               </label>
             ))}
 
-            {!invitation.hasContactEmail && (
+            {personalized && !invitation.hasContactEmail && (
               <label>
                 {copy.email}
                 <input type="email" value={email} maxLength={254} onChange={(event) => setEmail(event.target.value)} disabled={submitting} />

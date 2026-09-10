@@ -28,13 +28,12 @@ export function tokenHash(token) {
 
 export function validateInvitationInput(input = {}) {
   const maxAttendees = Number(input.maxAttendees);
-  if (!Number.isInteger(maxAttendees) || maxAttendees < 1 || maxAttendees > 20) throw new Error("invalid-capacity");
-  const defaultLanguage = LANGUAGES.has(input.defaultLanguage) ? input.defaultLanguage : "es";
+  if (!Number.isInteger(maxAttendees) || maxAttendees < 1 || maxAttendees > 3) throw new Error("invalid-capacity");
   return {
     displayName: cleanText(input.displayName, 100, true),
     contactEmail: normalizeEmail(input.contactEmail),
     maxAttendees,
-    defaultLanguage,
+    defaultLanguage: LANGUAGES.has(input.defaultLanguage) ? input.defaultLanguage : "es",
     group: cleanText(input.group, 80),
     notes: cleanText(input.notes, 500),
   };
@@ -44,24 +43,34 @@ export function validateRsvpInput(input = {}, invitation) {
   if (!RESPONSE_STATUSES.has(input.status)) throw new Error("invalid-status");
   const attending = input.status === "attending";
   const attendingCount = attending ? Number(input.attendingCount) : 0;
-  if (attending && (!Number.isInteger(attendingCount) || attendingCount < 1 || attendingCount > invitation.maxAttendees)) {
-    throw new Error("invalid-attendance-count");
-  }
+  if (attending && (!Number.isInteger(attendingCount) || attendingCount < 1 || attendingCount > invitation.maxAttendees)) throw new Error("invalid-attendance-count");
   const attendeeNames = attending && Array.isArray(input.attendeeNames)
     ? input.attendeeNames.map((name) => cleanText(name, 100, true))
     : [];
   if (attending && attendeeNames.length !== attendingCount) throw new Error("invalid-attendee-names");
-
-  const suppliedEmail = normalizeEmail(input.guestEmail);
-  const contactEmail = suppliedEmail || invitation.contactEmail || "";
+  const contactEmail = normalizeEmail(input.guestEmail) || invitation.contactEmail || "";
   if (!contactEmail) throw new Error("email-required");
-
   return {
     status: input.status,
     attendingCount,
     attendeeNames,
     contactEmail,
     language: LANGUAGES.has(input.language) ? input.language : invitation.defaultLanguage || "es",
+    message: cleanText(input.message, 500),
+  };
+}
+
+export function validatePublicRsvpInput(input = {}, displayName) {
+  if (!RESPONSE_STATUSES.has(input.status)) throw new Error("invalid-status");
+  const attending = input.status === "attending";
+  const attendingCount = attending ? Number(input.attendingCount) : 0;
+  if (attending && (!Number.isInteger(attendingCount) || attendingCount < 1 || attendingCount > 3)) throw new Error("invalid-attendance-count");
+  return {
+    status: input.status,
+    attendingCount,
+    attendeeNames: attending ? [cleanText(displayName, 100, true)] : [],
+    contactEmail: normalizeEmail(input.guestEmail),
+    language: LANGUAGES.has(input.language) ? input.language : "es",
     message: cleanText(input.message, 500),
   };
 }

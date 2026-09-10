@@ -3,12 +3,13 @@ dist/
 qa/
 .openai/
 design-qa.md
+.design-qa/
 AGENTS.md
 .DS_Store
 *.log
 .env
 .env.*
 !.env.example
-functions/.env
-functions/.env.*
-!functions/.env.example
+server/.env
+server/.env.*
+!server/.env.example

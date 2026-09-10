@@ -36,8 +36,8 @@ export function parseInvitationCsv(source) {
     const row = Object.fromEntries(headers.map((header, index) => [header, values[index] || ""]));
     const maxAttendees = Number(row.maxattendees);
     if (!row.name) throw new Error(`Falta el nombre en la fila ${rowIndex + 2}.`);
-    if (!Number.isInteger(maxAttendees) || maxAttendees < 1 || maxAttendees > 20) {
-      throw new Error(`Los cupos de la fila ${rowIndex + 2} deben estar entre 1 y 20.`);
+    if (!Number.isInteger(maxAttendees) || maxAttendees < 1 || maxAttendees > 3) {
+      throw new Error(`Los cupos de la fila ${rowIndex + 2} deben estar entre 1 y 3.`);
     }
     return {
       displayName: row.name,
@@ -63,7 +63,7 @@ export function toCsv(rows) {
     (row.attendeeNames || []).join(" | "),
     row.message,
     row.emailStatus?.overall || "not-sent",
-    row.respondedAt?.toDate?.()?.toISOString?.() || "",
+    row.respondedAt ? new Date(row.respondedAt).toISOString() : "",
     row.shareUrl,
   ].map(escape).join(","));
   return [headers.map(escape).join(","), ...lines].join("\r\n");

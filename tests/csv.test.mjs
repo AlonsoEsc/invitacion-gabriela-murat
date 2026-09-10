@@ -3,14 +3,14 @@ import test from "node:test";
 import { parseInvitationCsv, toCsv } from "../src/admin/csv.js";
 
 test("parses quoted guest data and normalizes capacity", () => {
-  const rows = parseInvitationCsv('name,email,maxAttendees,language,group,notes\n"Familia, López",test@example.com,4,es,Familia,"Mesa 1"');
+  const rows = parseInvitationCsv('name,email,maxAttendees,language,group,notes\n"Familia, López",test@example.com,3,es,Familia,"Mesa 1"');
   assert.equal(rows.length, 1);
   assert.equal(rows[0].displayName, "Familia, López");
-  assert.equal(rows[0].maxAttendees, 4);
+  assert.equal(rows[0].maxAttendees, 3);
 });
 
 test("rejects invalid capacity before import", () => {
-  assert.throws(() => parseInvitationCsv("name,maxAttendees\nInvitado,0"), /entre 1 y 20/);
+  assert.throws(() => parseInvitationCsv("name,maxAttendees\nInvitado,0"), /entre 1 y 3/);
 });
 
 test("exports companion names without breaking CSV cells", () => {

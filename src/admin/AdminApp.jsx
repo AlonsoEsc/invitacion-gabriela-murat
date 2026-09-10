@@ -1,9 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
-import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
-import { isFirebaseConfigured } from "../lib/firebase.js";
-import { getFirebaseAdminServices } from "../lib/firebaseAdmin.js";
-import { createInvitation, importInvitations, retryRsvpEmail, updateInvitation } from "../services/rsvpService.js";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { adminEventsUrl, createInvitation, getAdminSession, importInvitations, listInvitations, loginAdmin, logoutAdmin, retryRsvpEmail, updateInvitation } from "../services/rsvpService.js";
 import { parseInvitationCsv, toCsv } from "./csv.js";
 import "./admin.css";
 
@@ -27,11 +23,11 @@ function download(filename, contents, type) {
 }
 
 function formatDate(timestamp) {
-  const date = timestamp?.toDate?.();
-  return date ? new Intl.DateTimeFormat("es-SV", { dateStyle: "medium", timeStyle: "short" }).format(date) : "-";
+  const date = timestamp ? new Date(timestamp) : null;
+  return date && !Number.isNaN(date.getTime()) ? new Intl.DateTimeFormat("es-SV", { dateStyle: "medium", timeStyle: "short" }).format(date) : "-";
 }
 
-function AdminLogin() {
+function AdminLogin({ onLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -42,7 +38,8 @@ function AdminLogin() {
     setLoading(true);
     setError("");
     try {
-      await signInWithEmailAndPassword(getFirebaseAdminServices().auth, email.trim(), password);
+      const result = await loginAdmin(email.trim(), password);
+      onLogin(result.user);
     } catch {
       setError("No fue posible iniciar sesión. Verifica el correo y la contraseña.");
     } finally {
@@ -70,7 +67,7 @@ function Metric({ label, value, detail }) {
   return <article className="metric-card"><span>{label}</span><strong>{value}</strong>{detail && <small>{detail}</small>}</article>;
 }
 
-function InvitationForm({ invitation, onClose }) {
+function InvitationForm({ invitation, onClose, onSaved }) {
   const editing = Boolean(invitation);
   const [form, setForm] = useState(() => editing ? {
     displayName: invitation.displayName || "",
@@ -98,6 +95,7 @@ function InvitationForm({ invitation, onClose }) {
         setResult(response.shareUrl);
         setForm(EMPTY_FORM);
       }
+      await onSaved();
     } catch {
       setResult(`No se pudo ${editing ? "actualizar" : "crear"} la invitación. Revisa los datos e intenta nuevamente.`);
     } finally {
@@ -111,7 +109,7 @@ function InvitationForm({ invitation, onClose }) {
       <form className="admin-invitation-form" onSubmit={submit}>
         <label>Invitado o familia<input value={form.displayName} onChange={(event) => change("displayName", event.target.value)} maxLength={100} required /></label>
         <label>Correo para confirmación<input type="email" value={form.contactEmail} onChange={(event) => change("contactEmail", event.target.value)} maxLength={254} /></label>
-        <label>Cupos permitidos<input type="number" min="1" max="20" value={form.maxAttendees} onChange={(event) => change("maxAttendees", event.target.value)} required /></label>
+        <label>Cupos permitidos<input type="number" min="1" max="3" value={form.maxAttendees} onChange={(event) => change("maxAttendees", event.target.value)} required /></label>
         <label>Idioma<select value={form.defaultLanguage} onChange={(event) => change("defaultLanguage", event.target.value)}><option value="es">Español</option><option value="en">English</option><option value="ar">العربية</option></select></label>
         <label>Grupo<input value={form.group} onChange={(event) => change("group", event.target.value)} placeholder="Familia, amigos, trabajo..." maxLength={80} /></label>
         <label className="admin-form-wide">Notas internas<textarea value={form.notes} onChange={(event) => change("notes", event.target.value)} maxLength={500} /></label>
@@ -133,15 +131,20 @@ export function AdminApp() {
   const [editing, setEditing] = useState(null);
   const [notice, setNotice] = useState("");
 
-  useEffect(() => {
-    if (!isFirebaseConfigured) {
-      setAuthReady(true);
-      return undefined;
+  const loadInvitations = useCallback(async () => {
+    if (!user) return;
+    try {
+      const result = await listInvitations();
+      setInvitations(result.invitations.map((item) => ({ ...item, shareUrl: item.shareUrl || invitationUrl(item) })));
+    } catch {
+      setNotice("No fue posible leer la lista. Verifica la conexión con el servidor.");
+    } finally {
+      setLoading(false);
     }
-    return onAuthStateChanged(getFirebaseAdminServices().auth, (nextUser) => {
-      setUser(nextUser);
-      setAuthReady(true);
-    });
+  }, [user]);
+
+  useEffect(() => {
+    getAdminSession().then((result) => setUser(result.user)).catch(() => setUser(null)).finally(() => setAuthReady(true));
   }, []);
 
   useEffect(() => {
@@ -151,18 +154,15 @@ export function AdminApp() {
       return undefined;
     }
     setLoading(true);
-    const invitationsQuery = query(collection(getFirebaseAdminServices().db, "invitations"), orderBy("createdAt", "desc"));
-    return onSnapshot(invitationsQuery, (snapshot) => {
-      setInvitations(snapshot.docs.map((item) => {
-        const data = item.data();
-        return { id: item.id, ...data, shareUrl: invitationUrl(data) };
-      }));
-      setLoading(false);
-    }, () => {
-      setNotice("No fue posible leer la lista. Verifica que tu usuario tenga permisos de administrador.");
-      setLoading(false);
-    });
-  }, [user]);
+    loadInvitations();
+    const events = new EventSource(adminEventsUrl, { withCredentials: true });
+    events.addEventListener("invitations", loadInvitations);
+    const timer = window.setInterval(loadInvitations, 30000);
+    return () => {
+      events.close();
+      window.clearInterval(timer);
+    };
+  }, [loadInvitations, user]);
 
   const metrics = useMemo(() => {
     const attending = invitations.filter((item) => item.status === "attending");
@@ -196,6 +196,7 @@ export function AdminApp() {
       const csv = ["name,email,maxAttendees,language,group,notes,link", ...result.created.map((item) => [item.displayName, item.contactEmail || "", item.maxAttendees, item.defaultLanguage, item.group || "", item.notes || "", item.shareUrl].map((value) => `"${String(value).replaceAll('"', '""')}"`).join(","))].join("\r\n");
       download("enlaces-invitados.csv", csv, "text/csv;charset=utf-8");
       setNotice(`${result.created.length} enlaces creados y descargados.`);
+      await loadInvitations();
     } catch (error) {
       setNotice(error.message || "No se pudo importar el archivo.");
     } finally {
@@ -210,20 +211,20 @@ export function AdminApp() {
     try {
       const result = await retryRsvpEmail(invitationId);
       setNotice(result.emailStatus === "sent" ? "Los correos se enviaron correctamente." : "La respuesta está guardada, pero uno de los correos sigue pendiente.");
+      await loadInvitations();
     } catch {
       setNotice("No fue posible reenviar los correos. Revisa la configuración del proveedor.");
     }
   };
 
   if (!authReady) return <main className="admin-loading">Cargando panel...</main>;
-  if (!isFirebaseConfigured) return <main className="admin-loading"><h1>Configuración pendiente</h1><p>Agrega las variables de Firebase para habilitar el panel.</p></main>;
-  if (!user) return <AdminLogin />;
+  if (!user) return <AdminLogin onLogin={setUser} />;
 
   return (
     <main className="admin-shell">
       <header className="admin-header">
         <div><span className="admin-eyebrow">Gabriela &amp; Murad</span><h1>Control de invitados</h1><p>Confirmaciones actualizadas en tiempo real.</p></div>
-        <div className="admin-header-actions"><a href={import.meta.env.BASE_URL}>Ver invitación</a><button type="button" onClick={() => signOut(getFirebaseAdminServices().auth)}>Cerrar sesión</button></div>
+        <div className="admin-header-actions"><a href={import.meta.env.BASE_URL}>Ver invitación</a><button type="button" onClick={async () => { await logoutAdmin(); setUser(null); }}>Cerrar sesión</button></div>
       </header>
 
       <section className="metrics-grid" aria-label="Resumen de confirmaciones">
@@ -244,7 +245,7 @@ export function AdminApp() {
       </section>
 
       {notice && <p className="admin-notice" role="status">{notice}</p>}
-      {showForm && <InvitationForm invitation={editing} onClose={() => { setShowForm(false); setEditing(null); }} />}
+      {showForm && <InvitationForm invitation={editing} onSaved={loadInvitations} onClose={() => { setShowForm(false); setEditing(null); }} />}
 
       <section className="admin-table-card">
         <div className="admin-section-title"><div><span>Lista general</span><h2>{visibleRows.length} invitaciones</h2></div><small>Actualización automática</small></div>
