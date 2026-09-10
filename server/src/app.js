@@ -5,45 +5,13 @@ import express from "express";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import jwt from "jsonwebtoken";
-import mongoose from "mongoose";
 import { randomUUID, timingSafeEqual } from "node:crypto";
 import { existsSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildShareUrl, cleanText, invitationToken, normalizeEmail, tokenHash, validateInvitationInput, validatePublicRsvpInput, validateRsvpInput } from "./domain.js";
+import { connectDatabase, database, isDatabaseConnected } from "./database.js";
 import { deliverRsvpEmails } from "./email.js";
-
-const invitationSchema = new mongoose.Schema({
-  displayName: { type: String, required: true },
-  contactEmail: { type: String, default: "" },
-  maxAttendees: { type: Number, required: true, min: 1, max: 3 },
-  defaultLanguage: { type: String, enum: ["es", "en", "ar"], default: "es" },
-  group: { type: String, default: "" },
-  notes: { type: String, default: "" },
-  publicResponseId: { type: String, unique: true, sparse: true, index: true },
-  token: { type: String, required: true, unique: true, select: false },
-  tokenHash: { type: String, required: true, unique: true, index: true },
-  disabled: { type: Boolean, default: false },
-  status: { type: String, enum: ["pending", "attending", "declined"], default: "pending" },
-  attendingCount: { type: Number, default: 0 },
-  attendeeNames: { type: [String], default: [] },
-  message: { type: String, default: "" },
-  language: { type: String, enum: ["es", "en", "ar"], default: "es" },
-  confirmationCode: { type: String, default: "" },
-  emailStatus: { type: mongoose.Schema.Types.Mixed, default: { overall: "not-sent" } },
-  respondedAt: Date,
-  lastSubmittedAt: Date,
-  rsvpDeadlineAt: { type: Date, required: true },
-}, { timestamps: true });
-
-const submissionSchema = new mongoose.Schema({
-  submissionId: { type: String, required: true, unique: true, index: true },
-  invitationId: { type: mongoose.Schema.Types.ObjectId, ref: "Invitation", required: true },
-  response: { type: mongoose.Schema.Types.Mixed, required: true },
-}, { timestamps: true });
-
-const Invitation = mongoose.models.Invitation || mongoose.model("Invitation", invitationSchema);
-const Submission = mongoose.models.Submission || mongoose.model("Submission", submissionSchema);
 const COOKIE_NAME = "gm_admin";
 const sseClients = new Set();
 
@@ -96,14 +64,10 @@ function publicInvitation(invitation) {
 }
 
 function adminInvitation(invitation) {
-  const record = invitation.toObject ? invitation.toObject() : invitation;
   return {
-    ...record,
-    id: String(record._id),
-    _id: undefined,
-    __v: undefined,
-    token: record.token,
-    shareUrl: buildShareUrl(publicSiteUrl(), record.token, record.defaultLanguage),
+    ...invitation,
+    id: String(invitation.id),
+    shareUrl: buildShareUrl(publicSiteUrl(), invitation.token, invitation.defaultLanguage),
   };
 }
 
@@ -150,8 +114,7 @@ async function sendAndRecord(invitation, responseData) {
     invitation,
     response: responseData,
   });
-  invitation.emailStatus = delivery;
-  await invitation.save();
+  await database().updateInvitation(invitation.id, { emailStatus: delivery });
   return delivery;
 }
 
@@ -166,7 +129,7 @@ export function createApp() {
   const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, limit: 20, standardHeaders: true, legacyHeaders: false });
   const rsvpLimiter = rateLimit({ windowMs: 5 * 60 * 1000, limit: 40, standardHeaders: true, legacyHeaders: false });
 
-  app.get("/api/health", (request, response) => response.json({ ok: true, database: mongoose.connection.readyState === 1 ? "connected" : "disconnected" }));
+  app.get("/api/health", (request, response) => response.json({ ok: true, database: isDatabaseConnected() ? "connected" : "disconnected" }));
 
   app.post("/api/auth/login", authLimiter, route(async (request, response) => {
     const email = normalizeEmail(request.body?.email, true);
@@ -185,7 +148,7 @@ export function createApp() {
   app.get("/api/auth/me", requireAdmin, (request, response) => response.json({ user: { email: request.admin.email } }));
 
   app.get("/api/invitations/public/:token", route(async (request, response) => {
-    const invitation = await Invitation.findOne({ tokenHash: tokenHash(request.params.token), disabled: false });
+    const invitation = await database().findByTokenHash(tokenHash(request.params.token));
     if (!invitation) return response.status(404).json({ error: "not-found" });
     return response.json(publicInvitation(invitation));
   }));
@@ -195,13 +158,13 @@ export function createApp() {
     const submissionId = cleanText(request.body?.submissionId, 80, true);
     if (!/^[A-Za-z0-9-]{10,80}$/.test(submissionId)) return response.status(400).json({ error: "invalid-submission" });
 
-    const duplicate = await Submission.findOne({ submissionId });
+    const duplicate = await database().findSubmission(submissionId);
     if (duplicate) {
-      const invitation = await Invitation.findById(duplicate.invitationId);
+      const invitation = await database().findById(duplicate.invitationId);
       return response.json({ saved: true, duplicate: true, emailStatus: invitation?.emailStatus?.overall || "pending", confirmationCode: duplicate.response?.confirmationCode });
     }
 
-    const invitation = await Invitation.findOne({ tokenHash: hashedToken, disabled: false });
+    const invitation = await database().findByTokenHash(hashedToken);
     if (!invitation) return response.status(404).json({ error: "not-found" });
     if (Date.now() > invitation.rsvpDeadlineAt.getTime()) return response.status(412).json({ error: "deadline-passed" });
     if (invitation.lastSubmittedAt && Date.now() - invitation.lastSubmittedAt.getTime() < 5000) return response.status(429).json({ error: "resource-exhausted" });
@@ -211,14 +174,13 @@ export function createApp() {
       confirmationCode: randomUUID().split("-")[0].toUpperCase(),
     };
 
-    const submission = await Submission.create({ submissionId, invitationId: invitation._id, response: responseData });
-    const updated = await Invitation.findOneAndUpdate(
-      { _id: invitation._id, $or: [{ lastSubmittedAt: null }, { lastSubmittedAt: { $lt: new Date(Date.now() - 5000) } }] },
+    await database().createSubmission(submissionId, invitation.id, responseData);
+    const updated = await database().updateInvitation(invitation.id,
       { ...responseData, respondedAt: new Date(), lastSubmittedAt: new Date(), emailStatus: { overall: "pending" } },
-      { new: true },
+      { lastSubmittedBefore: new Date(Date.now() - 5000) },
     );
     if (!updated) {
-      await Submission.deleteOne({ _id: submission._id });
+      await database().deleteSubmission(submissionId);
       return response.status(429).json({ error: "resource-exhausted" });
     }
 
@@ -235,7 +197,7 @@ export function createApp() {
 
     const responseId = suppliedId || randomUUID();
     const displayName = cleanText(request.body?.displayName, 100, true);
-    let invitation = suppliedId ? await Invitation.findOne({ publicResponseId: suppliedId }) : null;
+    let invitation = suppliedId ? await database().findByPublicResponseId(suppliedId) : null;
     if (invitation?.lastSubmittedAt && Date.now() - invitation.lastSubmittedAt.getTime() < 5000) {
       return response.status(429).json({ error: "resource-exhausted" });
     }
@@ -247,7 +209,7 @@ export function createApp() {
 
     if (!invitation) {
       const token = invitationToken();
-      invitation = await Invitation.create({
+      invitation = await database().createInvitation({
         displayName,
         contactEmail: responseData.contactEmail,
         maxAttendees: 3,
@@ -264,7 +226,7 @@ export function createApp() {
         emailStatus: { overall: "pending" },
       });
     } else {
-      Object.assign(invitation, {
+      invitation = await database().updateInvitation(invitation.id, {
         displayName,
         contactEmail: responseData.contactEmail,
         ...responseData,
@@ -272,7 +234,6 @@ export function createApp() {
         lastSubmittedAt: new Date(),
         emailStatus: { overall: "pending" },
       });
-      await invitation.save();
     }
 
     const delivery = await sendAndRecord(invitation, responseData);
@@ -293,25 +254,24 @@ export function createApp() {
   });
 
   app.get("/api/admin/invitations", route(async (request, response) => {
-    const invitations = await Invitation.find().select("+token").sort({ createdAt: -1 });
+    const invitations = await database().listInvitations();
     response.json({ invitations: invitations.map(adminInvitation) });
   }));
 
   app.post("/api/admin/invitations", route(async (request, response) => {
     const data = validateInvitationInput(request.body);
     const token = invitationToken();
-    const invitation = await Invitation.create({ ...data, token, tokenHash: tokenHash(token), rsvpDeadlineAt: deadline() });
+    const invitation = await database().createInvitation({ ...data, token, tokenHash: tokenHash(token), rsvpDeadlineAt: deadline() });
     notifyAdmins();
-    response.status(201).json(adminInvitation(await Invitation.findById(invitation._id).select("+token")));
+    response.status(201).json(adminInvitation(invitation));
   }));
 
   app.patch("/api/admin/invitations/:id", route(async (request, response) => {
     const data = validateInvitationInput(request.body);
-    const current = await Invitation.findById(request.params.id);
+    const current = await database().findById(request.params.id);
     if (!current) return response.status(404).json({ error: "not-found" });
     if ((current.attendingCount || 0) > data.maxAttendees) return response.status(412).json({ error: "capacity-below-confirmed" });
-    Object.assign(current, data);
-    await current.save();
+    await database().updateInvitation(current.id, data);
     notifyAdmins();
     return response.json({ saved: true });
   }));
@@ -324,13 +284,14 @@ export function createApp() {
       const token = invitationToken();
       return { ...data, token, tokenHash: tokenHash(token), rsvpDeadlineAt: deadline() };
     });
-    const created = await Invitation.insertMany(records, { ordered: true });
+    const created = [];
+    for (const record of records) created.push(await database().createInvitation(record));
     notifyAdmins();
-    return response.status(201).json({ created: created.map((invitation, index) => adminInvitation({ ...invitation.toObject(), token: records[index].token })) });
+    return response.status(201).json({ created: created.map(adminInvitation) });
   }));
 
   app.post("/api/admin/invitations/:id/retry-email", route(async (request, response) => {
-    const invitation = await Invitation.findById(request.params.id);
+    const invitation = await database().findById(request.params.id);
     if (!invitation || !["attending", "declined"].includes(invitation.status)) return response.status(412).json({ error: "no-response" });
     const responseData = {
       status: invitation.status,
@@ -339,7 +300,7 @@ export function createApp() {
       contactEmail: invitation.contactEmail,
       language: invitation.language || invitation.defaultLanguage || "es",
       message: invitation.message || "",
-      confirmationCode: invitation.confirmationCode || String(invitation._id).slice(0, 8).toUpperCase(),
+      confirmationCode: invitation.confirmationCode || String(invitation.id).slice(0, 8).toUpperCase(),
     };
     const delivery = await sendAndRecord(invitation, responseData);
     notifyAdmins();
@@ -363,6 +324,4 @@ export function createApp() {
   return app;
 }
 
-export async function connectDatabase(uri) {
-  await mongoose.connect(uri, { serverSelectionTimeoutMS: 10000 });
-}
+export { connectDatabase };

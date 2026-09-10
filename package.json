@@ -10,6 +10,7 @@
     "dev:full": "concurrently -k -n API,WEB -c magenta,cyan \"npm run dev:api\" \"npm run dev -- --host 127.0.0.1 --port 5174\"",
     "build": "vite build && node scripts/prepare-sites-build.mjs",
     "build:pages": "vite build",
+    "package:ifastnet": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/package-ifastnet.ps1",
     "preview": "vite preview",
     "start": "npm --prefix server start",
     "test": "node --test tests/csv.test.mjs && npm --prefix server test",

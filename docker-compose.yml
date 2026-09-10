@@ -5,24 +5,33 @@ services:
     env_file:
       - server/.env
     environment:
-      MONGODB_URI: mongodb://mongo:27017/gabriela_murad
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: gabriela_murad
+      MYSQL_USER: boda
+      MYSQL_PASSWORD: local-docker-password
       NODE_ENV: production
     ports:
       - "8080:4001"
     depends_on:
-      mongo:
+      mysql:
         condition: service_healthy
 
-  mongo:
-    image: mongo:8
+  mysql:
+    image: mysql:8.4
     restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: local-root-password
+      MYSQL_DATABASE: gabriela_murad
+      MYSQL_USER: boda
+      MYSQL_PASSWORD: local-docker-password
     volumes:
-      - mongo_data:/data/db
+      - mysql_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u$$MYSQL_USER -p$$MYSQL_PASSWORD --silent"]
       interval: 10s
       timeout: 5s
       retries: 10
 
 volumes:
-  mongo_data:
+  mysql_data:
