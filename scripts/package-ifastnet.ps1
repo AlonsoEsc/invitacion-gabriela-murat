@@ -6,7 +6,7 @@ $stagingRoot = Join-Path $releaseDirectory "staging"
 $applicationRoot = Join-Path $stagingRoot "invitacion"
 $archivePath = Join-Path $releaseDirectory "invitacion-ifastnet.zip"
 
-npm run build:pages
+npm run build:pages -- --base=/
 if ($LASTEXITCODE -ne 0) { throw "La compilacion del frontend fallo." }
 
 if (Test-Path -LiteralPath $stagingRoot) { Remove-Item -LiteralPath $stagingRoot -Recurse -Force }
